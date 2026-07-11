@@ -3,307 +3,23 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="color-scheme" content="dark">
-<meta name="theme-color" content="#000000">
-<title>APP 1.7 Automated Decision-Making Disclosure Tool — Prototype</title>
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;600&display=swap');
-
-.root {
-  min-height: 100vh;
-  background: #000000;
-  color: #ffffff;
-  font-family: 'Space Grotesk', system-ui, sans-serif;
-  padding: 32px clamp(16px, 4vw, 56px) 64px;
-  line-height: 1.55;
-}
-.root * { box-sizing: border-box; }
-.root :focus-visible { outline: 3px solid #00E5FF; outline-offset: 2px; }
-@media (prefers-reduced-motion: reduce) { .root * { transition: none !important; } }
-html { background: #000000; }
-body { background: #000000; margin: 0; }
-
-h1, h2, h3 { font-weight: 700; letter-spacing: -0.01em; margin: 0 0 8px; }
-h1 { font-size: clamp(1.6rem, 3.4vw, 2.4rem); }
-h2 { font-size: clamp(1.3rem, 2.6vw, 1.8rem); }
-p { margin: 0 0 10px; }
-
-.eyebrow {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 0.72rem; font-weight: 600; letter-spacing: 0.14em;
-  color: #ffffff; margin: 0 0 10px;
-}
-
-.hdr { display: flex; flex-wrap: wrap; gap: 20px; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid #ffffff; padding-bottom: 24px; margin-bottom: 20px; }
-.hdr-sub { max-width: 640px; font-size: 1.02rem; }
-.proto-badge {
-  font-family: 'IBM Plex Mono', monospace; font-size: 0.75rem; line-height: 1.6;
-  border: 2px solid #FFC400; color: #FFC400; padding: 10px 14px; max-width: 320px;
-}
-
-.nav { display: flex; gap: 12px; margin: 0 0 28px; flex-wrap: wrap; }
-.nav-b {
-  font-family: 'Space Grotesk', sans-serif; font-size: 0.95rem; font-weight: 500;
-  background: #0a0a0a; color: #ffffff; border: 2px solid #ffffff;
-  padding: 10px 18px; cursor: pointer;
-}
-.nav-b.on { background: #ffffff; color: #000000; font-weight: 700; }
-.nav-cta { border-color: #00E5FF; color: #00E5FF; }
-.nav-cta:hover { background: #00E5FF; color: #000000; }
-
-.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 16px; }
-.stat { background: #0a0a0a; border: 2px solid #ffffff; padding: 16px; }
-.stat-n { display: block; font-size: 2.2rem; font-weight: 700; line-height: 1; }
-.stat-l { font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; display: block; margin-top: 8px; color: #ffffff; }
-
-.legend { border-left: 4px solid #00E5FF; padding: 8px 14px; margin: 0 0 20px; max-width: 900px; font-size: 0.95rem; background: #0a0a0a; }
-
-.process {
-  display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap;
-  font-family: 'IBM Plex Mono', monospace; margin: 0 0 16px;
-}
-.p-step { font-size: 0.95rem; font-weight: 600; color: #ffffff; }
-.p-n {
-  display: inline-block; border: 2px solid #00E5FF; color: #00E5FF;
-  font-size: 0.75rem; padding: 1px 7px; margin-right: 6px;
-}
-.p-arrow { color: #00E5FF; font-weight: 700; }
-.p-detail { font-size: 0.72rem; letter-spacing: 0.08em; color: #ffffff; }
-
-.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; margin-bottom: 32px; }
-.card { background: #0a0a0a; border: 2px solid #ffffff; padding: 18px; display: flex; flex-direction: column; gap: 8px; }
-.card h3 { font-size: 1.1rem; }
-.card-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
-.mono-id { font-family: 'IBM Plex Mono', monospace; font-size: 0.75rem; color: #ffffff; letter-spacing: 0.1em; }
-.card-owner { font-size: 0.88rem; color: #ffffff; }
-.card-actions { margin-top: auto; }
-
-.lamps { display: flex; gap: 6px; flex-wrap: wrap; }
-.lamp {
-  font-family: 'IBM Plex Mono', monospace; font-size: 0.66rem; font-weight: 600;
-  padding: 4px 8px; border: 2px solid; display: inline-flex; flex-direction: column; align-items: center; white-space: nowrap;
-}
-.lamp em { font-style: normal; font-weight: 400; font-size: 0.58rem; letter-spacing: 0.04em; }
-.lamps-lg .lamp { font-size: 0.8rem; padding: 6px 12px; }
-.lamps-lg .lamp em { font-size: 0.64rem; }
-.lamp-l1-on { border-color: #00E5FF; color: #00E5FF; }
-.lamp-l2-on { border-color: #00FF85; color: #00FF85; }
-.lamp-warn { border-color: #FFC400; color: #FFC400; }
-.lamp-off { border-color: #ffffff; color: #ffffff; border-style: dashed; }
-
-.flag-amber { border: 2px solid #FFC400; color: #FFC400; padding: 8px 12px; font-size: 0.88rem; }
-.flag-red { border: 2px solid #FF4D6D; color: #FF4D6D; padding: 8px 12px; font-size: 0.88rem; }
-.flag-plain { border: 2px dashed #ffffff; color: #ffffff; padding: 8px 12px; font-size: 0.88rem; }
-.big-flag { max-width: 860px; margin-bottom: 20px; }
-
-.btn {
-  font-family: 'Space Grotesk', sans-serif; font-size: 0.95rem; font-weight: 600;
-  background: #000000; color: #ffffff; border: 2px solid #ffffff; padding: 10px 16px; cursor: pointer;
-}
-.btn:hover { background: #ffffff; color: #000000; }
-.btn-bright { border-color: #00E5FF; color: #00E5FF; }
-.btn-bright:hover { background: #00E5FF; color: #000000; }
-.btn-big { font-size: 1.05rem; padding: 14px 24px; margin-top: 8px; }
-.btn:disabled { border-color: #ffffff; color: #ffffff; border-style: dashed; cursor: not-allowed; background: #000; }
-.link-back { display: block; margin-top: 24px; background: none; border: none; color: #ffffff; text-decoration: underline; cursor: pointer; font-size: 0.92rem; font-family: inherit; padding: 0; }
-
-.ghost {
-  border: 2px dotted #C792FF; color: #C792FF; padding: 12px 14px; font-size: 0.85rem;
-  background: #000000; max-width: 420px;
-}
-.ghost strong { display: block; margin: 6px 0 4px; color: #C792FF; }
-.ghost p { margin: 0; color: #C792FF; }
-.ghost-tag {
-  font-family: 'IBM Plex Mono', monospace; font-size: 0.64rem; letter-spacing: 0.14em;
-  border: 1px solid #C792FF; padding: 2px 6px; color: #C792FF;
-}
-.ghost-row { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 36px; }
-
-.gap-panel { border: 2px solid #FF4D6D; padding: 22px 24px; max-width: 900px; margin-bottom: 24px; background: #0a0a0a; }
-.gap-panel p { max-width: 820px; }
-.future-panel { border: 2px dotted #C792FF; color: #C792FF; padding: 18px 22px; max-width: 900px; margin-bottom: 32px; }
-.future-panel p { color: #C792FF; margin: 10px 0 0; }
-.future-panel strong { color: #C792FF; }
-
-.foot { font-family: 'IBM Plex Mono', monospace; font-size: 0.74rem; line-height: 1.7; border-top: 2px solid #ffffff; padding-top: 16px; max-width: 900px; color: #ffffff; }
-
-.narrow { max-width: 720px; }
-.lede { font-size: 1.02rem; margin-bottom: 24px; }
-.field { margin-bottom: 18px; }
-.field label { display: block; font-weight: 600; margin-bottom: 6px; }
-.field input, .field textarea, .field select {
-  width: 100%; background: #0a0a0a; color: #ffffff; border: 2px solid #ffffff;
-  padding: 10px 12px; font-family: 'Space Grotesk', sans-serif; font-size: 0.98rem;
-}
-.field select option { background: #0a0a0a; color: #ffffff; }
-.field .q-help { margin: 6px 0 0; }
-.field input::placeholder, .field textarea::placeholder { color: #ffffff; opacity: 0.75; }
-
-.rev-tag { font-family: 'IBM Plex Mono', monospace; font-size: 0.66rem; letter-spacing: 0.1em; border: 1px solid; padding: 2px 8px; align-self: flex-start; }
-.rev-draft { border-color: #FFC400; color: #FFC400; }
-.rev-final { border-color: #00FF85; color: #00FF85; }
-.banner { border: 2px solid; padding: 14px 18px; margin: 0 0 16px; max-width: 860px;
-  display: flex; flex-wrap: wrap; align-items: center; gap: 14px; font-size: 0.95rem; }
-.banner strong { font-family: 'IBM Plex Mono', monospace; letter-spacing: 0.04em; }
-.banner-draft { border-color: #FFC400; color: #FFC400; }
-.banner-final { border-color: #00FF85; color: #00FF85; }
-.btn-approve { border-color: #00FF85; color: #00FF85; margin-left: auto; }
-.btn-approve:hover { background: #00FF85; color: #000000; }
-
-.btn-dl { font-size: 0.85rem; align-self: flex-start; border-color: #00E5FF; color: #00E5FF; }
-.btn-dl:hover { background: #00E5FF; color: #000000; }
-.out-actions { display: flex; gap: 12px; flex-wrap: wrap; }
-
-.loading { font-family: 'IBM Plex Mono', monospace; font-size: 0.95rem; color: #00E5FF; }
-.save-note { border: 2px solid #FFC400; color: #FFC400; padding: 8px 12px; font-size: 0.85rem; max-width: 700px; margin: 0 0 20px; }
-
-.q-block { border: 2px solid #ffffff; padding: 16px 18px; margin-bottom: 18px; }
-.q-block legend { font-weight: 700; padding: 0 8px; }
-.q-num { font-family: 'IBM Plex Mono', monospace; color: #00E5FF; margin-right: 6px; }
-.q-help { font-size: 0.88rem; margin: 6px 0 12px; }
-.yn { display: flex; gap: 10px; }
-.yn-b {
-  font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 0.95rem;
-  background: #000000; color: #ffffff; border: 2px solid #ffffff; padding: 8px 20px; cursor: pointer;
-}
-.yn-b.yn-on { background: #00E5FF; color: #000000; border-color: #00E5FF; }
-.radio-row { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 10px; cursor: pointer; }
-.radio-row input { accent-color: #00E5FF; width: 18px; height: 18px; margin-top: 3px; }
-
-.l2-block { border-color: #00FF85; }
-.l2-tag { font-family: 'IBM Plex Mono', monospace; font-size: 0.66rem; letter-spacing: 0.1em; color: #00FF85; border: 1px solid #00FF85; padding: 2px 6px; margin-left: 8px; vertical-align: middle; }
-.l2-q { margin-bottom: 16px; }
-.l2-q p { margin-bottom: 8px; font-weight: 500; }
-
-.result { border: 2px solid #ffffff; padding: 18px 20px; margin-top: 20px; }
-.result-trig { border-color: #00E5FF; }
-.result strong { display: block; font-size: 1.1rem; margin-bottom: 6px; }
-.result .btn { margin-top: 8px; }
-
-.out-head { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; justify-content: space-between; margin-bottom: 16px; }
-.outputs { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 18px; margin-bottom: 28px; align-items: start; }
-.out-card { background: #0a0a0a; border: 2px solid #ffffff; padding: 18px; display: flex; flex-direction: column; gap: 14px; }
-
-.reg { margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 0.8rem; }
-.reg-subhead {
-  font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; font-weight: 600;
-  letter-spacing: 0.14em; text-transform: uppercase; color: #00E5FF;
-  border-bottom: 2px solid #00E5FF; padding-bottom: 4px; margin: 6px 0 0;
-}
-
-.trace { border: 2px solid #ffffff; padding: 14px; display: flex; flex-direction: column; gap: 4px; }
-.trace-title { font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; margin: 0 0 8px; color: #ffffff; }
-.trace-step { border-left: 4px solid #00E5FF; padding: 4px 12px; }
-.trace-step p { margin: 2px 0 0; font-size: 0.88rem; font-family: 'Space Grotesk', sans-serif; }
-.trace-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.66rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: #00E5FF; }
-.trace-arrow { color: #00E5FF; font-weight: 700; padding-left: 14px; line-height: 1; }
-.trace-result { border-left-color: #00FF85; }
-.trace-result .trace-label { color: #00FF85; }
-.trace-citizen { background: #000000; }
-.notice-example-intro { font-size: 0.88rem; }
-
-.high-risk-block { border: 2px solid #FF4D6D; padding: 12px 14px; margin-top: 6px; }
-.high-risk-block .q-help { color: #FF4D6D; margin-top: 0; }
-.trace-block { border-color: #00E5FF; }
-
-.hdr-tag {
-  display: inline-block; font-family: 'IBM Plex Mono', monospace; font-size: 0.66rem;
-  font-weight: 600; letter-spacing: 0.14em; color: #00E5FF; border: 1px solid #00E5FF;
-  padding: 3px 8px; margin-top: 12px;
-}
-.about { border: 2px solid #ffffff; margin: 0 0 24px; max-width: 900px; background: #0a0a0a; }
-.about summary {
-  cursor: pointer; padding: 12px 16px; font-weight: 600; font-size: 0.95rem;
-  font-family: 'IBM Plex Mono', monospace; letter-spacing: 0.04em;
-}
-.about summary:hover { background: #ffffff; color: #000000; }
-.about-body { padding: 4px 18px 16px; }
-.about-list { margin: 8px 0 0; padding-left: 20px; }
-.about-list li { margin-bottom: 8px; font-size: 0.92rem; }
-.about-list-intro { font-weight: 600; }
-
-.pre-steps { display: flex; flex-direction: column; gap: 18px; margin: 20px 0 24px; }
-.pre-step { display: flex; gap: 14px; align-items: flex-start; border: 2px solid #ffffff; padding: 16px 18px; background: #0a0a0a; }
-.pre-step strong { display: block; margin-bottom: 4px; }
-.pre-step p { margin: 0; font-size: 0.92rem; }
-
-.evidence { border: 2px solid #ffffff; padding: 12px 14px; display: flex; flex-direction: column; gap: 10px; background: #000000; }
-.ev-row { border-left: 4px solid #ffffff; padding: 2px 12px; }
-.ev-row p { margin: 2px 0 0; font-size: 0.88rem; font-family: 'Space Grotesk', sans-serif; }
-.ev-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.64rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: #ffffff; }
-.ev-result { border-left-color: #00FF85; }
-.ev-result .ev-label { color: #00FF85; }
-.trace-stamp { float: right; font-weight: 400; letter-spacing: 0.06em; color: #ffffff; text-transform: none; }
-
-.banner-text { flex: 1 1 100%; }
-.approve-fields { display: flex; flex-wrap: wrap; gap: 14px; align-items: flex-end; width: 100%; }
-.approve-field { display: flex; flex-direction: column; gap: 4px; flex: 1 1 220px; }
-.approve-field label { font-family: 'IBM Plex Mono', monospace; font-size: 0.66rem; letter-spacing: 0.1em; text-transform: uppercase; color: #FFC400; }
-.approve-field input { background: #000000; color: #ffffff; border: 2px solid #FFC400; padding: 8px 10px; font-family: 'Space Grotesk', sans-serif; font-size: 0.92rem; }
-.approve-field input::placeholder { color: #FFC400; opacity: 0.8; }
-.btn-approve:disabled { border-style: dashed; opacity: 1; color: #FFC400; border-color: #FFC400; cursor: not-allowed; background: #000; }
-
-.selfcert { display: flex; gap: 10px; align-items: flex-start; cursor: pointer; font-size: 0.95rem; color: #FFC400; font-weight: 600; }
-.selfcert input { accent-color: #FFC400; width: 20px; height: 20px; margin-top: 2px; flex-shrink: 0; }
-.signoff { border: 2px solid #FFC400; padding: 12px 14px; width: 100%; }
-.signoff-title { font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.06em; margin: 0 0 10px; }
-.signoff-scope { display: block; font-weight: 400; font-family: 'Space Grotesk', sans-serif; font-size: 0.85rem; letter-spacing: 0; margin-top: 2px; }
-.signoff-done { font-family: 'IBM Plex Mono', monospace; font-size: 0.85rem; color: #00FF85; margin: 0; }
-
-.exceptions { border: 2px solid #FF4D6D; padding: 16px 18px; margin: 0 0 28px; max-width: 900px; background: #0a0a0a; display: flex; flex-direction: column; gap: 10px; }
-.exception-row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; border-left: 4px solid #FF4D6D; padding: 6px 12px; }
-.exception-flag { font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.08em; color: #FF4D6D; border: 1px solid #FF4D6D; padding: 3px 8px; }
-.exception-name { font-size: 0.92rem; flex: 1; }
-.btn-sm { font-size: 0.82rem; padding: 6px 12px; }
-.about-gap { border-left: 4px solid #FF4D6D; padding: 4px 12px; margin: 12px 0 0; font-size: 0.88rem; }
-
-.exec-evidence { border: 2px solid #ffffff; background: #000000; }
-.exec-evidence summary { cursor: pointer; padding: 10px 14px; font-family: 'IBM Plex Mono', monospace; font-size: 0.75rem; letter-spacing: 0.06em; }
-.exec-evidence summary:hover { background: #ffffff; color: #000000; }
-.exec-evidence .ev-row { margin: 8px 14px; }
-.trace-compact { border: none; padding: 4px 14px 12px; gap: 8px; }
-
-.citizen-wrap { max-width: 760px; display: flex; flex-direction: column; gap: 18px; align-items: flex-start; }
-.citizen-frame { font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; letter-spacing: 0.1em; border: 1px solid #C792FF; color: #C792FF; padding: 4px 10px; margin: 0; }
-.citizen-screen { border: 2px solid #ffffff; width: 100%; background: #0a0a0a; }
-.cz-masthead { display: flex; gap: 12px; align-items: center; border-bottom: 2px solid #ffffff; padding: 16px 22px; }
-.cz-crest { font-size: 1.5rem; color: #00E5FF; }
-.cz-agency { display: block; font-weight: 700; font-size: 1.05rem; }
-.cz-portal { display: block; font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; letter-spacing: 0.1em; color: #ffffff; }
-.cz-body { padding: 22px; }
-.cz-body h2 { font-size: 1.35rem; margin-top: 8px; }
-.cz-body h3 { font-size: 1rem; color: #00E5FF; margin: 18px 0 4px; }
-.cz-body p { font-size: 0.95rem; }
-.cz-ref { font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; letter-spacing: 0.08em; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
-.cz-draft-tag { border: 1px solid #FFC400; color: #FFC400; padding: 2px 8px; font-size: 0.64rem; letter-spacing: 0.1em; }
-.cz-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 22px; }
-.cz-action-note { border: 2px dotted #C792FF; color: #C792FF; padding: 10px 14px; margin-top: 14px; font-size: 0.88rem; }
-.reg > div { display: grid; grid-template-columns: 130px 1fr; gap: 10px; padding: 6px 0; border-bottom: 1px solid #ffffff; }
-.reg dt { font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; font-size: 0.68rem; }
-.reg dd { margin: 0; }
-
-.citizen .notice { border: 2px solid #ffffff; padding: 16px; background: #000000; }
-.notice h3 { font-size: 1.15rem; }
-.notice h4 { font-size: 0.95rem; margin: 14px 0 4px; color: #00E5FF; }
-.notice p { font-size: 0.94rem; }
-
-.exec { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
-.exec th { font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; letter-spacing: 0.08em; text-transform: uppercase; text-align: left; border-bottom: 2px solid #ffffff; padding: 6px 8px; }
-.exec td { border-bottom: 1px solid #ffffff; padding: 8px; vertical-align: top; }
-.exec .ok { color: #00FF85; font-weight: 700; }
-.exec .warn { color: #FFC400; font-weight: 700; }
-</style>
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#0a0a0a">
+<title>Disclose — APP 1.7 Automated Decision-Making Disclosure Tool</title>
 </head>
-<body>
+<body style="margin:0;">
 <div id="root"></div>
 <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
 <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
 <script>
 const { useState, useEffect } = React;
 /* ============================================================
-   APP 1.7 Automated Decision-Making Disclosure Tool — PROTOTYPE
-   Standalone demonstration piece. Not connected to any real
-   register, CMDB, or DTA system. Hypothetical example data only.
+   DISCLOSE — APP 1.7 Automated Decision-Making Disclosure Tool
+   PROTOTYPE. Standalone demonstration piece. Not connected to
+   any real register, CMDB, or DTA system. Hypothetical example
+   data only. Multi-page app shell: dark sidebar/header chrome,
+   light high-contrast content area (near-black text on white —
+   same accessibility goal as the original dark mode, inverted).
    ============================================================ */
 
 const OVERSIGHT = {
@@ -341,12 +57,99 @@ const BIAS_STATUS = {
   tested_passed: "Yes — tested"
 };
 const BIAS_OPTIONS = ["yes", "no", "not_applicable"];
+const SCREENING_QUESTIONS = [{
+  key: "personalInfo",
+  q: "Does this system use information about identifiable people?",
+  help: "Names, contact details, application content, account history, or anything that could identify a person — including information that identifies someone when combined with other data the agency holds."
+}, {
+  key: "affectsPerson",
+  q: "Does it make, or substantially inform, decisions that affect a person?",
+  help: "Eligibility, entitlements, service access, prioritisation, flagging for review — 'substantially inform' counts. The decision doesn't have to be final or fully automatic."
+}, {
+  key: "automated",
+  q: "Is any part of the decision process automated?",
+  help: "A computer program, model, rules engine, or scoring system — anything where software, not a person, produces or shapes the outcome."
+}];
+
+/* Mock logged-in identities — hypothetical, no real auth */
+const ROLES = {
+  business: {
+    name: "R. Okafor",
+    role: "Business Owner",
+    initials: "RO"
+  },
+  specialist: {
+    name: "A. Nguyen",
+    role: "AI Governance Specialist",
+    initials: "AN"
+  },
+  legal: {
+    name: "S. Patel",
+    role: "Legal Counsel",
+    initials: "SP"
+  },
+  exec: {
+    name: "M. Chen",
+    role: "Executive",
+    initials: "MC"
+  }
+};
+function identityOf(roleKey) {
+  const r = ROLES[roleKey];
+  return r.name + " (" + r.role + ")";
+}
+
+/* Governance Documents page data — concept demo, hypothetical content.
+   Pattern borrowed from standard AI governance document registers:
+   name, policy/clause reference, owner, related use cases, status. */
+const GOV_DOCS = [{
+  name: "AI Policy",
+  ref: "POL-AI-001 · cl. 4.2 automated decision-making",
+  owner: "Governance — Policy team",
+  related: "All AI use cases",
+  status: "not_connected",
+  note: "The policy this register operationalises. A real integration would link each use case to the clause that authorises it."
+}, {
+  name: "Risk Register",
+  ref: "RSK-ENT-114 · AI and automation risks",
+  owner: "Risk & Assurance",
+  related: "UC-001, UC-002",
+  status: "not_connected",
+  note: "Inherent/residual ratings recorded here should reconcile with the enterprise risk register, not live in a parallel copy."
+}, {
+  name: "Training Records",
+  ref: "TRN-AI-BASICS · GenAI basics completion",
+  owner: "Learning & Development",
+  related: "Accountable owners of all use cases",
+  status: "not_connected",
+  note: "Evidence that accountable owners have completed AI governance training — a common audit ask."
+}, {
+  name: "AI Use Case Register",
+  ref: "This tool · DTA Standard for Accountability fields",
+  owner: "AI Governance",
+  related: "All use cases in Disclose",
+  status: "this_tool",
+  note: "The register entries generated by Disclose. In a real deployment this would be the agency's mandated internal register — linking, not duplicating."
+}];
 const seedCases = [{
   id: "uc-001",
   name: "Automated grants eligibility screening",
   owner: "Community Programs — Grants team",
   status: "assessed",
   triggered: true,
+  activity: [{
+    ts: "2026-05-28 10:12",
+    text: "Screened — APP 1.7 triggered — by R. Okafor (Business Owner)"
+  }, {
+    ts: "2026-05-30 15:40",
+    text: "Assessment submitted by A. Nguyen (AI Governance Specialist)"
+  }, {
+    ts: "2026-06-01 09:05",
+    text: "Technical sign-off recorded: A. Nguyen — AI Governance Specialist (hypothetical)"
+  }, {
+    ts: "2026-06-02 14:22",
+    text: "Legal sign-off recorded: S. Patel — Legal Counsel (hypothetical). Status: FINAL"
+  }],
   assessment: {
     purpose: "Screen incoming community grant applications against published eligibility criteria before human assessment of eligible applications.",
     dataSources: "Application form responses; ABN lookup; prior grant history held by the agency.",
@@ -383,6 +186,7 @@ const seedCases = [{
     traceChecked: "Entity type against eligible categories; postcode against the program region; requested amount against the $25,000 cap; prior grant acquittal status.",
     traceRule: "All four criteria passed — the ruleset marks the application 'Eligible' and routes it to the assessment panel.",
     traceResult: "Eligible — forwarded to the human panel. The automation produced no adverse effect on the applicant.",
+    submittedBy: "A. Nguyen (AI Governance Specialist)",
     reviewStatus: "approved",
     approvedBy: null,
     techBy: "A. Nguyen — AI Governance Specialist (hypothetical)",
@@ -397,6 +201,13 @@ const seedCases = [{
   owner: "Customer Services — Digital channels",
   status: "assessed",
   triggered: true,
+  activity: [{
+    ts: "2026-03-18 11:02",
+    text: "Screened — APP 1.7 triggered — by R. Okafor (Business Owner)"
+  }, {
+    ts: "2026-03-22 16:31",
+    text: "Assessment submitted by A. Nguyen (AI Governance Specialist)"
+  }],
   assessment: {
     purpose: "Classify incoming website enquiries and route them to the right team, including flagging some enquiries for a self-service answer instead of a staff response.",
     dataSources: "Free-text enquiry content; page the enquiry was submitted from; enquiry category selected by the person.",
@@ -426,13 +237,14 @@ const seedCases = [{
     nextReviewDate: "2026-10-14",
     testingSummary: "Classifier v1.4 evaluated on a held-out sample of 1,000 de-identified enquiries.",
     testDate: "2026-03-20",
-    testCriteria: "≥90% routing accuracy overall required; category-level accuracy targets not yet defined.",
+    testCriteria: "\u226590% routing accuracy overall required; category-level accuracy targets not yet defined.",
     testResult: "Partial pass — 91% overall; accuracy by enquiry category untested.",
     traceTimestamp: "2026-03-20 09:47 AEST",
     traceInput: "Enquiry: 'My water bill seems much higher than last quarter and I can't afford it.'",
     traceChecked: "Enquiry text against the trained categories (billing, hardship, faults, general) and the confidence score of the top category.",
     traceRule: "Classified 'Billing — high bill' at 0.87 confidence, above the 0.75 auto-response threshold, so a self-service article was sent.",
     traceResult: "Automated self-service response. Note: the hardship signal ('can't afford') was not separately routed — a known gap feeding the fairness-testing backlog.",
+    submittedBy: "A. Nguyen (AI Governance Specialist)",
     reviewStatus: "draft",
     approvedBy: null,
     techBy: null,
@@ -447,27 +259,22 @@ const seedCases = [{
   owner: "Finance — Accounts payable",
   status: "outstanding",
   triggered: null,
+  activity: [],
   assessment: null
 }];
-const SCREENING_QUESTIONS = [{
-  key: "personalInfo",
-  q: "Does this system use information about identifiable people?",
-  help: "Names, contact details, application content, account history, or anything that could identify a person — including information that identifies someone when combined with other data the agency holds."
-}, {
-  key: "affectsPerson",
-  q: "Does it make, or substantially inform, decisions that affect a person?",
-  help: "Eligibility, entitlements, service access, prioritisation, flagging for review — 'substantially inform' counts. The decision doesn't have to be final or fully automatic."
-}, {
-  key: "automated",
-  q: "Is any part of the decision process automated?",
-  help: "A computer program, model, rules engine, or scoring system — anything where software, not a person, produces or shapes the outcome."
-}];
+
+/* ---------- helpers ---------- */
+
 function isL2Capable(a) {
   return !!(a && a.rationaleOnDemand && a.loggedVersioned && a.driftReassess);
 }
 function isHighRisk(a) {
   return a && (a.inherentRisk === "High" || a.residualRisk === "High");
 }
+
+// Review tier: only when BOTH ratings are Low can the AI Governance
+// Specialist self-certify; if either is Medium or High, two named
+// sign-offs (technical + legal) are required.
 function isLowRiskTier(a) {
   return a && a.inherentRisk === "Low" && a.residualRisk === "Low";
 }
@@ -522,6 +329,10 @@ function newDraft() {
     traceRule: "",
     traceResult: ""
   };
+}
+function nowStamp() {
+  const d = new Date();
+  return d.toISOString().slice(0, 10) + " " + d.toTimeString().slice(0, 5);
 }
 function downloadFile(filename, content, mime) {
   try {
@@ -604,8 +415,10 @@ function buildRegisterJSON(uc) {
       legalSignoff: a.legalBy ? {
         by: a.legalBy,
         date: a.legalDate
-      } : "Not recorded"
+      } : "Not recorded",
+      assessmentSubmittedBy: a.submittedBy || "Not recorded"
     },
+    activityLog: undefined,
     note: "Prototype output — hypothetical example data. Not a register of record. 'Rules-based' is not an official DTA AI technology type; it is included as a clearly-marked addition for non-AI automation."
   }, null, 2);
 }
@@ -620,6 +433,35 @@ function buildExecCSV(uc) {
   const row = [uc.name, uc.owner, AI_TECH[a.systemType] || "Not recorded", a.oversight === "each" ? "Every decision" : a.oversight === "sample" ? "Sample" : "None", "Yes", isL2Capable(a) ? "Yes" : "GAP", a.reviewStatus === "approved" ? "Final" : "Draft", isL2Capable(a) ? "Ready" : "At risk"];
   return header.map(esc).join(",") + "\n" + row.map(esc).join(",") + "\n";
 }
+
+/* ---------- small shared components ---------- */
+
+function Eyebrow({
+  children,
+  color
+}) {
+  return /*#__PURE__*/React.createElement("div", {
+    className: "eyebrow",
+    style: color ? {
+      color
+    } : undefined
+  }, children);
+}
+
+/* Solid, saturated status pills — white text on bold fills (not pastel) */
+function Pill({
+  tone,
+  children
+}) {
+  return /*#__PURE__*/React.createElement("span", {
+    className: "pill pill-" + tone
+  }, children);
+}
+const RISK_TONE = {
+  Low: "green",
+  Medium: "amber",
+  High: "red"
+};
 function LayerLamps({
   uc,
   size = "md"
@@ -647,20 +489,201 @@ function Ghost({
     className: "ghost-tag"
   }, "Future integration — not built"), /*#__PURE__*/React.createElement("strong", null, label), detail && /*#__PURE__*/React.createElement("p", null, detail));
 }
-function Eyebrow({
-  children,
-  color
+
+/* SVG donut for the Documented / Proven-in-Practice split */
+function Donut({
+  segments,
+  total,
+  label
 }) {
+  const R = 40;
+  const C = 2 * Math.PI * R;
+  let offset = 0;
+  const arcs = segments.filter(s => s.value > 0).map((s, i) => {
+    const dash = total > 0 ? s.value / total * C : 0;
+    const el = /*#__PURE__*/React.createElement("circle", {
+      key: i,
+      cx: "60",
+      cy: "60",
+      r: R,
+      fill: "none",
+      stroke: s.color,
+      strokeWidth: "16",
+      strokeDasharray: dash + " " + (C - dash),
+      strokeDashoffset: -offset,
+      transform: "rotate(-90 60 60)"
+    });
+    offset += dash;
+    return el;
+  });
   return /*#__PURE__*/React.createElement("div", {
-    className: "eyebrow",
-    style: color ? {
-      color
-    } : undefined
-  }, children);
+    className: "donut-wrap"
+  }, /*#__PURE__*/React.createElement("svg", {
+    viewBox: "0 0 120 120",
+    className: "donut",
+    role: "img",
+    "aria-label": label
+  }, /*#__PURE__*/React.createElement("circle", {
+    cx: "60",
+    cy: "60",
+    r: R,
+    fill: "none",
+    stroke: "#e2e2e2",
+    strokeWidth: "16"
+  }), arcs, /*#__PURE__*/React.createElement("text", {
+    x: "60",
+    y: "58",
+    textAnchor: "middle",
+    className: "donut-n"
+  }, total), /*#__PURE__*/React.createElement("text", {
+    x: "60",
+    y: "76",
+    textAnchor: "middle",
+    className: "donut-t"
+  }, "use cases")), /*#__PURE__*/React.createElement("ul", {
+    className: "donut-legend"
+  }, segments.map((s, i) => /*#__PURE__*/React.createElement("li", {
+    key: i
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "donut-dot",
+    style: {
+      background: s.color
+    }
+  }), " ", s.name, " — ", s.value))));
 }
+
+/* Workflow stepper — Screen → Assess → Outputs */
+function Stepper({
+  step
+}) {
+  const steps = ["Screen", "Assess", "Outputs"];
+  return /*#__PURE__*/React.createElement("div", {
+    className: "stepper",
+    "aria-label": "Workflow progress: step " + step + " of 3"
+  }, steps.map((label, i) => {
+    const n = i + 1;
+    const state = n < step ? "done" : n === step ? "active" : "todo";
+    return /*#__PURE__*/React.createElement("div", {
+      key: label,
+      className: "step step-" + state
+    }, /*#__PURE__*/React.createElement("span", {
+      className: "step-dot"
+    }, n < step ? "✓" : n), /*#__PURE__*/React.createElement("span", {
+      className: "step-label"
+    }, label), i < steps.length - 1 && /*#__PURE__*/React.createElement("span", {
+      className: "step-bar",
+      "aria-hidden": "true"
+    }));
+  }));
+}
+
+/* Register entry (Output A) as tabbed sections */
+function RegisterEntry({
+  uc
+}) {
+  const [tab, setTab] = useState("overview");
+  const a = uc.assessment;
+  const TABS = [["overview", "Overview"], ["risk", "Risk & Review"], ["evidence", "Testing Evidence"], ["runtime", "Runtime Proof"]];
+  return /*#__PURE__*/React.createElement("section", {
+    className: "out-card"
+  }, /*#__PURE__*/React.createElement(Eyebrow, null, "OUTPUT A — REGISTER-READY ENTRY"), /*#__PURE__*/React.createElement("div", {
+    className: "tabs",
+    role: "tablist",
+    "aria-label": "Register entry sections"
+  }, TABS.map(([k, label]) => /*#__PURE__*/React.createElement("button", {
+    key: k,
+    role: "tab",
+    "aria-selected": tab === k,
+    className: tab === k ? "tab on" : "tab",
+    onClick: () => setTab(k)
+  }, label))), tab === "overview" && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("p", {
+    className: "reg-subhead"
+  }, "DTA Standard for Accountability — identity"), /*#__PURE__*/React.createElement("dl", {
+    className: "reg"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("dt", null, "Use case name"), /*#__PURE__*/React.createElement("dd", null, uc.name)), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("dt", null, "Reference number"), /*#__PURE__*/React.createElement("dd", null, uc.id.toUpperCase())), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("dt", null, "Description"), /*#__PURE__*/React.createElement("dd", null, a.description || "Not recorded")), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("dt", null, "AI technology type"), /*#__PURE__*/React.createElement("dd", null, AI_TECH[a.systemType] || "Not recorded")), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("dt", null, "Lifecycle stage"), /*#__PURE__*/React.createElement("dd", null, LIFECYCLE[a.lifecycle] || "Not recorded")), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("dt", null, "Domain"), /*#__PURE__*/React.createElement("dd", null, a.domain || "Not recorded")), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("dt", null, "Usage pattern"), /*#__PURE__*/React.createElement("dd", null, a.usagePattern || "Not recorded")), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("dt", null, "Accountable owner"), /*#__PURE__*/React.createElement("dd", null, uc.owner, a.ownerEmail ? " · " + a.ownerEmail : "")), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("dt", null, "Model / version"), /*#__PURE__*/React.createElement("dd", null, a.modelVersion || "Not recorded")), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("dt", null, "Developer / vendor"), /*#__PURE__*/React.createElement("dd", null, a.vendor || "Not recorded")))), tab === "risk" && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("p", {
+    className: "reg-subhead"
+  }, "Scope, risk & review"), /*#__PURE__*/React.createElement("dl", {
+    className: "reg"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("dt", null, "In-scope criteria"), /*#__PURE__*/React.createElement("dd", null, a.inScopeCriteria || "Not recorded")), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("dt", null, "Inherent risk"), /*#__PURE__*/React.createElement("dd", null, a.inherentRisk ? /*#__PURE__*/React.createElement(Pill, {
+    tone: RISK_TONE[a.inherentRisk]
+  }, a.inherentRisk) : "Not recorded")), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("dt", null, "Residual risk"), /*#__PURE__*/React.createElement("dd", null, a.residualRisk ? /*#__PURE__*/React.createElement(Pill, {
+    tone: RISK_TONE[a.residualRisk]
+  }, a.residualRisk) : "Not recorded")), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("dt", null, "Impact assessment last updated"), /*#__PURE__*/React.createElement("dd", null, a.impactAssessmentDate || "Not recorded")), isHighRisk(a) && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("dt", null, "Last review date"), /*#__PURE__*/React.createElement("dd", null, a.lastReviewDate || "Not recorded")), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("dt", null, "Next review date"), /*#__PURE__*/React.createElement("dd", null, a.nextReviewDate || "Not recorded"))), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("dt", null, "Review cadence"), /*#__PURE__*/React.createElement("dd", null, a.cadence || "Not recorded")), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("dt", null, "Bias testing"), /*#__PURE__*/React.createElement("dd", null, BIAS_STATUS[a.biasTesting] || "Not recorded")), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("dt", null, "Bias notes"), /*#__PURE__*/React.createElement("dd", null, a.biasNotes || "None recorded")), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("dt", null, "Review status"), /*#__PURE__*/React.createElement("dd", null, /*#__PURE__*/React.createElement(Pill, {
+    tone: a.reviewStatus === "approved" ? "blue" : "amber"
+  }, a.reviewStatus === "approved" ? "FINAL" : "DRAFT"), " ", reviewLabel(a))))), tab === "evidence" && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("p", {
+    className: "reg-subhead"
+  }, "Testing evidence"), /*#__PURE__*/React.createElement("div", {
+    className: "evidence",
+    "aria-label": "Test record"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "ev-row"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "ev-label"
+  }, "What was tested"), /*#__PURE__*/React.createElement("p", null, a.testingSummary || "Not recorded")), /*#__PURE__*/React.createElement("div", {
+    className: "ev-row"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "ev-label"
+  }, "Test date"), /*#__PURE__*/React.createElement("p", null, a.testDate || "Not recorded")), /*#__PURE__*/React.createElement("div", {
+    className: "ev-row"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "ev-label"
+  }, "Criteria"), /*#__PURE__*/React.createElement("p", null, a.testCriteria || "Not recorded")), /*#__PURE__*/React.createElement("div", {
+    className: "ev-row ev-result"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "ev-label"
+  }, "Result"), /*#__PURE__*/React.createElement("p", null, a.testResult || "Not recorded"))), /*#__PURE__*/React.createElement("div", {
+    className: "trace",
+    "aria-label": "Worked example decision trace"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "trace-title"
+  }, "Worked example — one hypothetical case, traced", /*#__PURE__*/React.createElement("span", {
+    className: "trace-stamp"
+  }, a.traceTimestamp ? "logged " + a.traceTimestamp : "timestamp not logged")), /*#__PURE__*/React.createElement("div", {
+    className: "trace-step"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "trace-label"
+  }, "Input"), /*#__PURE__*/React.createElement("p", null, a.traceInput || "Not recorded")), /*#__PURE__*/React.createElement("div", {
+    className: "trace-arrow",
+    "aria-hidden": "true"
+  }, "↓"), /*#__PURE__*/React.createElement("div", {
+    className: "trace-step"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "trace-label"
+  }, "What the system checked"), /*#__PURE__*/React.createElement("p", null, a.traceChecked || "Not recorded")), /*#__PURE__*/React.createElement("div", {
+    className: "trace-arrow",
+    "aria-hidden": "true"
+  }, "↓"), /*#__PURE__*/React.createElement("div", {
+    className: "trace-step"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "trace-label"
+  }, "What rule / step produced the outcome"), /*#__PURE__*/React.createElement("p", null, a.traceRule || "Not recorded")), /*#__PURE__*/React.createElement("div", {
+    className: "trace-arrow",
+    "aria-hidden": "true"
+  }, "↓"), /*#__PURE__*/React.createElement("div", {
+    className: "trace-step trace-result"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "trace-label"
+  }, "Result"), /*#__PURE__*/React.createElement("p", null, a.traceResult || "Not recorded")))), tab === "runtime" && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("p", {
+    className: "reg-subhead"
+  }, "Beyond the standard — runtime & proof"), /*#__PURE__*/React.createElement("dl", {
+    className: "reg"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("dt", null, "APP 1.7 trigger"), /*#__PURE__*/React.createElement("dd", null, "YES — personal information used in automated decision-making")), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("dt", null, "Data sources"), /*#__PURE__*/React.createElement("dd", null, a.dataSources)), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("dt", null, "Decision logic"), /*#__PURE__*/React.createElement("dd", null, a.decisionLogic)), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("dt", null, "Human oversight"), /*#__PURE__*/React.createElement("dd", null, OVERSIGHT[a.oversight])), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("dt", null, "Training data"), /*#__PURE__*/React.createElement("dd", null, a.systemType === "rules" ? "Not applicable — rules-based, no training data" : a.trainingProvenance || "Not recorded")), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("dt", null, "Data retention"), /*#__PURE__*/React.createElement("dd", null, a.retention || "Not recorded")), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("dt", null, "Runtime rationale"), /*#__PURE__*/React.createElement("dd", null, a.rationaleOnDemand ? "AVAILABLE — case-specific rationale on request" : "NOT AVAILABLE — flagged for remediation")), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("dt", null, "Decision logging"), /*#__PURE__*/React.createElement("dd", null, a.loggedVersioned ? "Logged + timestamped, tied to logic version" : "NOT version-tied — flagged")), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("dt", null, "Change detection"), /*#__PURE__*/React.createElement("dd", null, a.driftReassess ? "Logic change prompts re-assessment" : "NO drift detection — flagged")), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("dt", null, "Status"), /*#__PURE__*/React.createElement("dd", null, /*#__PURE__*/React.createElement(Pill, {
+    tone: isL2Capable(a) ? "blue" : "amber"
+  }, isL2Capable(a) ? "PROVEN IN PRACTICE" : "DOCUMENTED ONLY — REMEDIATION REQUIRED"))))), /*#__PURE__*/React.createElement("button", {
+    className: "btn btn-dl",
+    onClick: () => downloadFile(uc.id + "-register-entry.json", buildRegisterJSON(uc), "application/json")
+  }, "↓ Download register entry (.json)"), /*#__PURE__*/React.createElement(Ghost, {
+    label: "Would connect to: agency AI Use Case Register",
+    detail: "Linking, not duplicating — this entry would reference the register record, not create a second source of truth."
+  }));
+}
+
+/* ---------- main app ---------- */
+
 const STORAGE_KEY = "app17:usecases";
 function App() {
   const [useCases, setUseCases] = useState(seedCases);
+  // views: dashboard | usecases | govdocs | about | prestart | screening | assessment | outputs | citizen
   const [view, setView] = useState("dashboard");
   const [activeId, setActiveId] = useState(null);
   const [screening, setScreening] = useState({});
@@ -669,12 +692,24 @@ function App() {
   const [screenResult, setScreenResult] = useState(null);
   const [loaded, setLoaded] = useState(false);
   const [storageOk, setStorageOk] = useState(true);
-  const [savePhase, setSavePhase] = useState(null);
+  const [savePhase, setSavePhase] = useState(null); // null | 'saving' | 'saved'
   const [techNameIn, setTechNameIn] = useState("");
   const [techDateIn, setTechDateIn] = useState("");
   const [legalNameIn, setLegalNameIn] = useState("");
   const [legalDateIn, setLegalDateIn] = useState("");
   const [citizenAction, setCitizenAction] = useState(null);
+  const [role, setRole] = useState("specialist"); // mock role switcher — no real auth
+  const [workflowMode, setWorkflowMode] = useState(false); // true when inside the Screen→Assess→Outputs wizard
+  const [sideNote, setSideNote] = useState(null); // which disabled sidebar item's note is open
+
+  // Role permissions (mock): what the logged-in role can DO.
+  const canScreen = role === "business" || role === "specialist";
+  const canAssess = role === "specialist";
+  const canTechSign = role === "specialist";
+  const canLegalSign = role === "legal";
+  const isExec = role === "exec";
+
+  // Load saved use cases on mount (personal storage, not shared)
   useEffect(() => {
     (async () => {
       try {
@@ -693,6 +728,32 @@ function App() {
       }
     })();
   }, []);
+
+  // Branding: tab title + inline SVG favicon for "Disclose".
+  // Three concepts considered, all abstract, palette-native:
+  //   1. Two overlapping squares — an outlined square (Documented: the paperwork exists)
+  //      partially covered by a solid square (Proven in Practice: the runtime reality).
+  //   2. A checkmark-in-progress — a half-drawn tick, compliance as ongoing, not done.
+  //   3. An open square — one side missing, suggesting disclosure/openness.
+  // Chosen: concept 1 — the only one that encodes the tool's actual argument
+  // (documentation and proof are different layers that must overlap), reads at 16px,
+  // and mirrors the Documented/Proven pill semantics in the UI.
+  useEffect(() => {
+    try {
+      document.title = "Disclose — APP 1.7 disclosure & assessment";
+      const svg = "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'>" + "<rect width='32' height='32' fill='%230a0a0a'/>" + "<rect x='4' y='4' width='16' height='16' fill='none' stroke='%2300E5FF' stroke-width='3'/>" + "<rect x='13' y='13' width='15' height='15' fill='%230F9D58'/>" + "</svg>";
+      let link = document.querySelector("link[rel='icon']");
+      if (!link) {
+        link = document.createElement("link");
+        link.rel = "icon";
+        document.head.appendChild(link);
+      }
+      link.type = "image/svg+xml";
+      link.href = "data:image/svg+xml," + svg;
+    } catch (e) {
+      // Non-fatal — some embedded contexts don't allow head manipulation
+    }
+  }, []);
   async function persist(next) {
     try {
       const result = await window.storage.set(STORAGE_KEY, JSON.stringify(next));
@@ -708,8 +769,11 @@ function App() {
   const active = useCases.find(u => u.id === activeId) || null;
   const assessed = useCases.filter(u => u.status === "assessed");
   const outstanding = useCases.filter(u => u.status === "outstanding");
+  const screenedOut = useCases.filter(u => u.status === "screened-out");
   const l2capable = assessed.filter(u => isL2Capable(u.assessment));
   const l1only = assessed.filter(u => !isL2Capable(u.assessment));
+
+  // Exception flags: High-risk use cases missing a named sign-off — distinct flags.
   const exceptions = [];
   assessed.forEach(u => {
     if (isHighRisk(u.assessment)) {
@@ -723,7 +787,17 @@ function App() {
       });
     }
   });
+  function withActivity(uc, text) {
+    return {
+      ...uc,
+      activity: [...(uc.activity || []), {
+        ts: nowStamp(),
+        text
+      }]
+    };
+  }
   function startScreening(existing) {
+    if (!canScreen) return;
     setScreening({});
     setScreenResult(null);
     if (existing) {
@@ -733,31 +807,44 @@ function App() {
       setActiveId(null);
       setScreenName("");
     }
+    setWorkflowMode(true);
     setView("prestart");
+  }
+  function openUseCase(uc) {
+    setActiveId(uc.id);
+    setWorkflowMode(false);
+    setView("outputs");
   }
   function finishScreening() {
     const triggered = SCREENING_QUESTIONS.every(q => screening[q.key] === true);
     setScreenResult(triggered ? "triggered" : "not-triggered");
+    const logText = triggered ? "Screened — APP 1.7 triggered — by " + identityOf(role) : "Screened — not triggered, decision recorded — by " + identityOf(role);
     if (!triggered) {
       if (activeId) {
-        commit(useCases.map(c => c.id === activeId ? {
+        commit(useCases.map(c => c.id === activeId ? withActivity({
           ...c,
           status: "screened-out",
           triggered: false
-        } : c));
+        }, logText) : c));
       } else if (screenName.trim()) {
-        commit([...useCases, {
+        const nc = withActivity({
           id: "uc-" + String(useCases.length + 1).padStart(3, "0"),
           name: screenName.trim(),
           owner: "",
           status: "screened-out",
           triggered: false,
+          activity: [],
           assessment: null
-        }]);
+        }, logText);
+        commit([...useCases, nc]);
       }
+    } else if (activeId) {
+      commit(useCases.map(c => c.id === activeId ? withActivity(c, logText) : c));
     }
+    // For new triggered use cases, the screening log is attached at assessment submit
   }
   function beginAssessment() {
+    if (!canAssess) return;
     setDraft({
       ...newDraft(),
       name: screenName || (active ? active.name : ""),
@@ -766,7 +853,7 @@ function App() {
     setView("assessment");
   }
   function editAssessment() {
-    if (!active || !active.assessment) return;
+    if (!active || !active.assessment || !canAssess) return;
     const a = active.assessment;
     setDraft({
       name: active.name,
@@ -807,9 +894,12 @@ function App() {
       traceRule: a.traceRule || "",
       traceResult: a.traceResult || ""
     });
+    setWorkflowMode(false);
     setView("assessment");
   }
   async function submitAssessment() {
+    if (!canAssess) return;
+    const isEdit = !!(active && active.assessment);
     const a = {
       purpose: draft.purpose,
       dataSources: draft.dataSources,
@@ -846,7 +936,9 @@ function App() {
       traceChecked: draft.traceChecked,
       traceRule: draft.traceRule,
       traceResult: draft.traceResult,
+      submittedBy: identityOf(role),
       reviewStatus: "draft",
+      // every submit (new or edited) returns to draft for review
       approvedBy: null,
       techBy: null,
       techDate: null,
@@ -854,28 +946,35 @@ function App() {
       legalDate: null,
       approvedAt: null
     };
+    const logText = (isEdit ? "Assessment edited and resubmitted by " : "Assessment submitted by ") + identityOf(role);
     setSavePhase("saving");
     let id = activeId;
     let next;
     if (activeId) {
-      next = useCases.map(c => c.id === activeId ? {
+      next = useCases.map(c => c.id === activeId ? withActivity({
         ...c,
         name: draft.name,
         owner: draft.owner,
         status: "assessed",
         triggered: true,
         assessment: a
-      } : c);
+      }, logText) : c);
     } else {
       id = "uc-" + String(useCases.length + 1).padStart(3, "0");
-      next = [...useCases, {
+      let nc = {
         id,
         name: draft.name,
         owner: draft.owner,
         status: "assessed",
         triggered: true,
+        activity: [{
+          ts: nowStamp(),
+          text: "Screened — APP 1.7 triggered — by " + identityOf(role)
+        }],
         assessment: a
-      }];
+      };
+      nc = withActivity(nc, logText);
+      next = [...useCases, nc];
     }
     setUseCases(next);
     await persist(next);
@@ -890,26 +989,49 @@ function App() {
     setLegalDateIn("");
     setView("outputs");
   }
+
+  // Risk-tiered review: Low/Low → self-certification; otherwise dual sign-off.
   function selfCertify() {
-    if (!active || !isLowRiskTier(active.assessment)) return;
-    commit(useCases.map(c => c.id === active.id ? {
+    if (!active || !isLowRiskTier(active.assessment) || !canAssess) return;
+    commit(useCases.map(c => c.id === active.id ? withActivity({
       ...c,
       assessment: {
         ...c.assessment,
         reviewStatus: "approved",
-        approvedBy: "AI Governance Specialist (self-certified)",
+        approvedBy: identityOf(role) + " (self-certified)",
         approvedAt: new Date().toISOString().slice(0, 10)
       }
-    } : c));
+    }, "Self-certified (low risk) by " + identityOf(role) + ". Status: FINAL") : c));
+  }
+
+  // Segregation of duties: the technical sign-off must come from a different
+  // named individual than whoever completed/submitted the assessment.
+  function normalizeName(s) {
+    return (s || "").toLowerCase().replace(/[^a-z0-9]/g, "");
+  }
+  function techSignoffConflict(name) {
+    if (!active || !name.trim()) return false;
+    const n = normalizeName(name);
+    if (!n) return false;
+    const clash = other => {
+      const o = normalizeName(other);
+      if (!o) return false;
+      return n === o || n.length > 5 && o.length > 5 && (n.includes(o) || o.includes(n));
+    };
+    return clash(active.owner) || clash(active.assessment && active.assessment.submittedBy);
   }
   function recordSignoff(kind) {
     if (!active) return;
+    if (kind === "tech" && !canTechSign) return;
+    if (kind === "legal" && !canLegalSign) return;
     const name = kind === "tech" ? techNameIn.trim() : legalNameIn.trim();
     const date = kind === "tech" ? techDateIn : legalDateIn;
     if (!name || !date) return;
+    if (kind === "tech" && techSignoffConflict(name)) return;
     const a = active.assessment;
     const otherDone = kind === "tech" ? !!a.legalBy : !!a.techBy;
-    commit(useCases.map(c => c.id === active.id ? {
+    const logText = (kind === "tech" ? "Technical sign-off recorded: " : "Legal sign-off recorded: ") + name + " — logged in as " + identityOf(role) + (otherDone ? ". Status: FINAL" : "");
+    commit(useCases.map(c => c.id === active.id ? withActivity({
       ...c,
       assessment: {
         ...c.assessment,
@@ -920,7 +1042,7 @@ function App() {
           approvedAt: date
         } : {})
       }
-    } : c));
+    }, logText) : c));
     if (kind === "tech") {
       setTechNameIn("");
       setTechDateIn("");
@@ -932,196 +1054,300 @@ function App() {
   const highRiskDraft = draft.inherentRisk === "High" || draft.residualRisk === "High";
   const trainedModelDraft = draft.systemType && draft.systemType !== "rules";
   const draftComplete = draft.name.trim() && draft.owner.trim() && draft.ownerEmail.trim() && draft.description.trim() && draft.purpose.trim() && draft.dataSources.trim() && draft.decisionLogic.trim() && draft.oversight && draft.systemType && draft.lifecycle && draft.domain.trim() && draft.usagePattern.trim() && draft.inScopeCriteria.trim() && draft.inherentRisk && draft.residualRisk && draft.impactAssessmentDate.trim() && (!highRiskDraft || draft.lastReviewDate.trim() && draft.nextReviewDate.trim()) && draft.modelVersion.trim() && draft.vendor.trim() && draft.cadence.trim() && (!trainedModelDraft || draft.trainingProvenance.trim()) && draft.biasTesting && draft.retention.trim() && draft.testingSummary.trim() && draft.testDate.trim() && draft.testCriteria.trim() && draft.testResult.trim() && draft.traceInput.trim() && draft.traceChecked.trim() && draft.traceRule.trim() && draft.traceResult.trim() && draft.rationaleOnDemand !== null && draft.loggedVersioned !== null && draft.driftReassess !== null;
+
+  // Breadcrumb / page title for the persistent header
+  function pageTitle() {
+    if (view === "dashboard") return "Dashboard";
+    if (view === "usecases") return "Use Cases";
+    if (view === "govdocs") return "Governance Documents";
+    if (view === "about") return "About";
+    if (view === "prestart" || view === "screening") return "New use case · Screening";
+    if (view === "assessment") return "New use case · Assessment";
+    if (view === "outputs" && active) return active.id.toUpperCase() + " — " + active.name;
+    if (view === "citizen" && active) return active.id.toUpperCase() + " · Citizen view";
+    return "Disclose";
+  }
+  const inWorkflow = ["prestart", "screening", "assessment"].includes(view) || view === "outputs" && workflowMode;
+  const stepperStep = view === "assessment" ? 2 : view === "outputs" ? 3 : 1;
+  const SIDEBAR_FUTURE = [{
+    key: "register",
+    label: "Agency AI Use Case Register",
+    note: "Would receive the register entries generated here — linking, not duplicating. Integration not built."
+  }, {
+    key: "cmdb",
+    label: "CMDB / Systems Inventory",
+    note: "Each use case would reference the system record it runs on, so a system change can trigger re-assessment. Integration not built."
+  }, {
+    key: "dta",
+    label: "DTA 6-monthly reporting",
+    note: "Today this step is an email to ai@dta.gov.au — no shared schema, no API. Exports here would target that format. Integration not built."
+  }];
   return /*#__PURE__*/React.createElement("div", {
-    className: "root"
-  }, /*#__PURE__*/React.createElement("header", {
-    className: "hdr"
+    className: "shell"
+  }, /*#__PURE__*/React.createElement("style", null, css), /*#__PURE__*/React.createElement("nav", {
+    className: "sidebar",
+    "aria-label": "Main navigation"
   }, /*#__PURE__*/React.createElement("div", {
-    className: "hdr-left"
-  }, /*#__PURE__*/React.createElement("h1", null, "Does your automated system make decisions about people? This helps you disclose it properly."), /*#__PURE__*/React.createElement("p", {
-    className: "hdr-sub"
-  }, "For government teams whose systems decide or shape outcomes for individuals — like AI helping decide eligibility, priority, or access to a service. One assessment produces a register entry, a citizen-facing notice, and an executive summary. Screening takes about 2 minutes; a full assessment about 15–20."), /*#__PURE__*/React.createElement("div", {
-    className: "hdr-tag"
-  }, "APP 1.7 · AUTOMATED DECISION-MAKING · EFFECTIVE DEC 2026")), /*#__PURE__*/React.createElement("div", {
-    className: "proto-badge",
-    role: "note"
-  }, "PROTOTYPE — standalone demonstration.", /*#__PURE__*/React.createElement("br", null), "No real agency data. Rules-based: no AI in the assessment path.")), /*#__PURE__*/React.createElement("nav", {
-    className: "nav",
-    "aria-label": "Views"
-  }, /*#__PURE__*/React.createElement("button", {
-    className: view === "dashboard" ? "nav-b on" : "nav-b",
+    className: "side-brand"
+  }, /*#__PURE__*/React.createElement("svg", {
+    className: "brand-mark",
+    viewBox: "0 0 32 32",
+    "aria-hidden": "true"
+  }, /*#__PURE__*/React.createElement("rect", {
+    x: "4",
+    y: "4",
+    width: "16",
+    height: "16",
+    fill: "none",
+    stroke: "#00E5FF",
+    strokeWidth: "3"
+  }), /*#__PURE__*/React.createElement("rect", {
+    x: "13",
+    y: "13",
+    width: "15",
+    height: "15",
+    fill: "#0F9D58"
+  })), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("span", {
+    className: "side-name"
+  }, "Disclose"), /*#__PURE__*/React.createElement("span", {
+    className: "side-sub"
+  }, "APP 1.7 · prototype"))), /*#__PURE__*/React.createElement("button", {
+    className: "side-item" + (view === "dashboard" ? " on" : ""),
     onClick: () => setView("dashboard")
-  }, "Portfolio dashboard"), /*#__PURE__*/React.createElement("button", {
-    className: "nav-b nav-cta",
+  }, "Dashboard"), /*#__PURE__*/React.createElement("button", {
+    className: "side-item" + (["usecases", "outputs", "citizen"].includes(view) && !inWorkflow ? " on" : ""),
+    onClick: () => setView("usecases")
+  }, "Use Cases"), canScreen && /*#__PURE__*/React.createElement("button", {
+    className: "side-item side-cta" + (inWorkflow ? " on" : ""),
     onClick: () => startScreening(null)
-  }, "+ Screen a new use case")), !storageOk && /*#__PURE__*/React.createElement("p", {
+  }, "+ Screen a new use case"), /*#__PURE__*/React.createElement("button", {
+    className: "side-item" + (view === "govdocs" ? " on" : ""),
+    onClick: () => setView("govdocs")
+  }, "Governance Documents"), /*#__PURE__*/React.createElement("button", {
+    className: "side-item" + (view === "about" ? " on" : ""),
+    onClick: () => setView("about")
+  }, "About"), /*#__PURE__*/React.createElement("div", {
+    className: "side-divider",
+    "aria-hidden": "true"
+  }), /*#__PURE__*/React.createElement("p", {
+    className: "side-future-head"
+  }, "Future integrations — not built"), SIDEBAR_FUTURE.map(f => /*#__PURE__*/React.createElement("div", {
+    key: f.key,
+    className: "side-disabled-wrap"
+  }, /*#__PURE__*/React.createElement("button", {
+    className: "side-item side-disabled",
+    "aria-disabled": "true",
+    title: f.note,
+    onClick: () => setSideNote(sideNote === f.key ? null : f.key)
+  }, f.label, " ", /*#__PURE__*/React.createElement("span", {
+    className: "side-lock",
+    "aria-hidden": "true"
+  }, "⊘")), sideNote === f.key && /*#__PURE__*/React.createElement("p", {
+    className: "side-note"
+  }, f.note))), /*#__PURE__*/React.createElement("div", {
+    className: "side-foot"
+  }, "Prototype — hypothetical data only.", /*#__PURE__*/React.createElement("br", null), "Rules-based: no AI in the assessment path.")), /*#__PURE__*/React.createElement("div", {
+    className: "main-col"
+  }, /*#__PURE__*/React.createElement("header", {
+    className: "topbar"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "crumb"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "crumb-app"
+  }, "Disclose"), /*#__PURE__*/React.createElement("span", {
+    className: "crumb-sep",
+    "aria-hidden": "true"
+  }, "/"), /*#__PURE__*/React.createElement("span", {
+    className: "crumb-page"
+  }, pageTitle())), /*#__PURE__*/React.createElement("div", {
+    className: "topbar-right"
+  }, /*#__PURE__*/React.createElement("button", {
+    className: "bell",
+    title: exceptions.length + " exception(s): high-risk use cases missing sign-off",
+    onClick: () => setView("dashboard"),
+    "aria-label": "Alerts: " + exceptions.length
+  }, "🔔", exceptions.length > 0 && /*#__PURE__*/React.createElement("span", {
+    className: "bell-count"
+  }, exceptions.length)), /*#__PURE__*/React.createElement("div", {
+    className: "user-badge"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "avatar",
+    "aria-hidden": "true"
+  }, ROLES[role].initials), /*#__PURE__*/React.createElement("div", {
+    className: "user-meta"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "user-name"
+  }, ROLES[role].name), /*#__PURE__*/React.createElement("label", {
+    className: "user-role"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "visually-hidden"
+  }, "Logged in as role"), /*#__PURE__*/React.createElement("select", {
+    value: role,
+    onChange: e => {
+      setRole(e.target.value);
+      setSideNote(null);
+    },
+    "aria-label": "Switch role (mock)"
+  }, /*#__PURE__*/React.createElement("option", {
+    value: "business"
+  }, "Business Owner"), /*#__PURE__*/React.createElement("option", {
+    value: "specialist"
+  }, "AI Governance Specialist"), /*#__PURE__*/React.createElement("option", {
+    value: "legal"
+  }, "Legal Counsel"), /*#__PURE__*/React.createElement("option", {
+    value: "exec"
+  }, "Executive"))))))), /*#__PURE__*/React.createElement("main", {
+    className: "content"
+  }, !storageOk && /*#__PURE__*/React.createElement("p", {
     className: "save-note",
     role: "status"
-  }, "⚠ Saved storage isn't available in this environment — changes will work normally but won't survive a page refresh."), !loaded && /*#__PURE__*/React.createElement("main", null, /*#__PURE__*/React.createElement("p", {
+  }, "⚠ Saved storage isn't available in this environment — changes will work normally but won't survive a page refresh."), !loaded && /*#__PURE__*/React.createElement("p", {
     className: "loading",
     role: "status"
-  }, "Loading saved use cases…")), view === "dashboard" && loaded && /*#__PURE__*/React.createElement("main", null, /*#__PURE__*/React.createElement("div", {
-    className: "process",
-    "aria-label": "How this tool works"
-  }, /*#__PURE__*/React.createElement("span", {
-    className: "p-step"
-  }, /*#__PURE__*/React.createElement("span", {
-    className: "p-n"
-  }, "1"), " Screen"), /*#__PURE__*/React.createElement("span", {
-    className: "p-arrow",
-    "aria-hidden": "true"
-  }, "→"), /*#__PURE__*/React.createElement("span", {
-    className: "p-step"
-  }, /*#__PURE__*/React.createElement("span", {
-    className: "p-n"
-  }, "2"), " Assess"), /*#__PURE__*/React.createElement("span", {
-    className: "p-arrow",
-    "aria-hidden": "true"
-  }, "→"), /*#__PURE__*/React.createElement("span", {
-    className: "p-step"
-  }, /*#__PURE__*/React.createElement("span", {
-    className: "p-n"
-  }, "3"), " Get 3 outputs"), /*#__PURE__*/React.createElement("span", {
-    className: "p-detail"
-  }, "register entry · citizen notice · exec summary")), /*#__PURE__*/React.createElement("details", {
-    className: "about"
-  }, /*#__PURE__*/React.createElement("summary", null, "About this prototype — a quick exercise, not a finished system"), /*#__PURE__*/React.createElement("div", {
-    className: "about-body"
-  }, /*#__PURE__*/React.createElement("p", null, "This is a fast prototype exploring the problem space: what would it take for an agency to determine, disclose, and prove its APP 1.7 compliance? It is not a finished or authoritative system. A real implementation would need to be worked through ", /*#__PURE__*/React.createElement("em", null, "with"), " the people it affects — citizens, front-line staff, compliance practitioners — not developed for them in isolation."), /*#__PURE__*/React.createElement("p", {
-    className: "about-list-intro"
-  }, "An open question this exercise raises, rather than a claim it's been done: who would need to be in the room next?"), /*#__PURE__*/React.createElement("ul", {
-    className: "about-list"
-  }, /*#__PURE__*/React.createElement("li", null, "Business and system owners"), /*#__PURE__*/React.createElement("li", null, "Compliance officers"), /*#__PURE__*/React.createElement("li", null, "A dedicated technical validator — the role banks call an \"AI Model Validator\": someone who verifies that claims made about a model are actually true, not just documents them"), /*#__PURE__*/React.createElement("li", null, "Legal and privacy teams"), /*#__PURE__*/React.createElement("li", null, "Citizen and community representatives"), /*#__PURE__*/React.createElement("li", null, "The DTA and equivalent state bodies")), /*#__PURE__*/React.createElement("p", {
-    className: "about-gap"
-  }, "Named gap: procurement/vendor input and a regulator-facing (OAIC/DTA) view are out of scope for this prototype — deliberately named here rather than silently absent."))), /*#__PURE__*/React.createElement("div", {
-    className: "legend"
-  }, /*#__PURE__*/React.createElement("strong", null, "Documented — system-level:"), " the use case is written up and on the register (done once, re-done on change).", " ", /*#__PURE__*/React.createElement("strong", null, "Proven in Practice — decision-level:"), " the agency can show, for any individual decision, what happened and why (has to hold every time the system runs). A use case can be fully documented and still fail the person it decides about."), /*#__PURE__*/React.createElement("section", {
+  }, "Loading saved use cases…"), inWorkflow && loaded && /*#__PURE__*/React.createElement(Stepper, {
+    step: stepperStep
+  }), view === "dashboard" && loaded && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("h2", {
+    className: "page-h"
+  }, "Dashboard"), /*#__PURE__*/React.createElement("section", {
     className: "stats",
     "aria-label": "Portfolio status"
   }, /*#__PURE__*/React.createElement("div", {
-    className: "stat"
+    className: "statcard"
   }, /*#__PURE__*/React.createElement("span", {
+    className: "stat-l"
+  }, "Use cases identified"), /*#__PURE__*/React.createElement("span", {
     className: "stat-n"
-  }, useCases.length), /*#__PURE__*/React.createElement("span", {
-    className: "stat-l"
-  }, "use cases identified")), /*#__PURE__*/React.createElement("div", {
-    className: "stat"
+  }, useCases.length)), /*#__PURE__*/React.createElement("div", {
+    className: "statcard"
   }, /*#__PURE__*/React.createElement("span", {
+    className: "stat-l"
+  }, "Assessed"), /*#__PURE__*/React.createElement("span", {
     className: "stat-n",
     style: {
-      color: "#00E5FF"
+      color: "#0066CC"
     }
-  }, assessed.length), /*#__PURE__*/React.createElement("span", {
-    className: "stat-l"
-  }, "assessed")), /*#__PURE__*/React.createElement("div", {
-    className: "stat"
+  }, assessed.length)), /*#__PURE__*/React.createElement("div", {
+    className: "statcard"
   }, /*#__PURE__*/React.createElement("span", {
+    className: "stat-l"
+  }, "Outstanding before Dec 2026"), /*#__PURE__*/React.createElement("span", {
     className: "stat-n",
     style: {
-      color: "#FF4D6D"
+      color: "#D32F2F"
     }
-  }, outstanding.length), /*#__PURE__*/React.createElement("span", {
-    className: "stat-l"
-  }, "outstanding before Dec 2026")), /*#__PURE__*/React.createElement("div", {
-    className: "stat"
+  }, outstanding.length)), /*#__PURE__*/React.createElement("div", {
+    className: "statcard"
   }, /*#__PURE__*/React.createElement("span", {
+    className: "stat-l"
+  }, "Documented only — flagged"), /*#__PURE__*/React.createElement("span", {
     className: "stat-n",
     style: {
-      color: "#FFC400"
+      color: "#E8890C"
     }
-  }, l1only.length), /*#__PURE__*/React.createElement("span", {
-    className: "stat-l"
-  }, "Documented only — flagged")), /*#__PURE__*/React.createElement("div", {
-    className: "stat"
+  }, l1only.length)), /*#__PURE__*/React.createElement("div", {
+    className: "statcard"
   }, /*#__PURE__*/React.createElement("span", {
+    className: "stat-l"
+  }, "Proven in practice"), /*#__PURE__*/React.createElement("span", {
     className: "stat-n",
     style: {
-      color: "#00FF85"
+      color: "#0F9D58"
     }
-  }, l2capable.length), /*#__PURE__*/React.createElement("span", {
+  }, l2capable.length)), /*#__PURE__*/React.createElement("div", {
+    className: "statcard statcard-chart"
+  }, /*#__PURE__*/React.createElement("span", {
     className: "stat-l"
-  }, "Proven in practice"))), exceptions.length > 0 && /*#__PURE__*/React.createElement("section", {
+  }, "Documented vs Proven in Practice — all use cases"), /*#__PURE__*/React.createElement(Donut, {
+    total: useCases.length,
+    label: "Split of use cases: proven in practice, documented only, not yet assessed, screened out",
+    segments: [{
+      name: "Proven in practice",
+      value: l2capable.length,
+      color: "#0F9D58"
+    }, {
+      name: "Documented only",
+      value: l1only.length,
+      color: "#E8890C"
+    }, {
+      name: "Not yet assessed",
+      value: outstanding.length,
+      color: "#D32F2F"
+    }, {
+      name: "Screened out",
+      value: screenedOut.length,
+      color: "#5F6368"
+    }]
+  }))), exceptions.length > 0 && /*#__PURE__*/React.createElement("section", {
     className: "exceptions",
     "aria-label": "Exceptions requiring executive attention"
   }, /*#__PURE__*/React.createElement(Eyebrow, {
-    color: "#FF4D6D"
+    color: "#D32F2F"
   }, "EXCEPTIONS — EXECUTIVE ATTENTION"), exceptions.map((ex, i) => /*#__PURE__*/React.createElement("div", {
     key: i,
     className: "exception-row",
     role: "alert"
-  }, /*#__PURE__*/React.createElement("span", {
-    className: "exception-flag"
+  }, /*#__PURE__*/React.createElement(Pill, {
+    tone: "red"
   }, ex.flag), /*#__PURE__*/React.createElement("span", {
     className: "exception-name"
   }, ex.uc.name, " (", ex.uc.id.toUpperCase(), ")"), /*#__PURE__*/React.createElement("button", {
     className: "btn btn-sm",
-    onClick: () => {
-      setActiveId(ex.uc.id);
-      setView("outputs");
-    }
-  }, "Open →")))), /*#__PURE__*/React.createElement("section", {
-    "aria-label": "Use cases"
-  }, /*#__PURE__*/React.createElement(Eyebrow, null, "USE CASES"), /*#__PURE__*/React.createElement("div", {
-    className: "cards"
-  }, useCases.map(uc => /*#__PURE__*/React.createElement("article", {
-    key: uc.id,
-    className: "card"
+    onClick: () => openUseCase(ex.uc)
+  }, "Open →"))))), view === "usecases" && loaded && /*#__PURE__*/React.createElement(UseCasesPage, {
+    useCases: useCases,
+    openUseCase: openUseCase,
+    startScreening: startScreening,
+    canScreen: canScreen
+  }), view === "govdocs" && loaded && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("h2", {
+    className: "page-h"
+  }, "Governance Documents"), /*#__PURE__*/React.createElement("p", {
+    className: "page-lede"
+  }, "An AI use case register never stands alone — it sits inside a broader governance document set. This page shows that concept: the documents a register entry should link to, with honest connection states. All content hypothetical."), /*#__PURE__*/React.createElement("div", {
+    className: "gov-grid"
+  }, GOV_DOCS.map(d => /*#__PURE__*/React.createElement("article", {
+    key: d.name,
+    className: "gov-card"
   }, /*#__PURE__*/React.createElement("div", {
-    className: "card-top"
-  }, /*#__PURE__*/React.createElement("span", {
-    className: "mono-id"
-  }, uc.id.toUpperCase()), /*#__PURE__*/React.createElement(LayerLamps, {
-    uc: uc
-  })), /*#__PURE__*/React.createElement("h3", null, uc.name), /*#__PURE__*/React.createElement("p", {
-    className: "card-owner"
-  }, uc.owner || "Owner not yet recorded"), uc.status === "assessed" && /*#__PURE__*/React.createElement("span", {
-    className: uc.assessment.reviewStatus === "approved" ? "rev-tag rev-final" : "rev-tag rev-draft"
-  }, uc.assessment.reviewStatus === "approved" ? "FINAL — approved" : "DRAFT — pending approval"), uc.status === "assessed" && !isL2Capable(uc.assessment) && /*#__PURE__*/React.createElement("p", {
-    className: "flag-amber",
-    role: "alert"
-  }, "⚠ Documented, but cannot yet produce a case-specific rationale at runtime. The disclosure this generates promises more than the system can currently show."), uc.status === "outstanding" && /*#__PURE__*/React.createElement("p", {
-    className: "flag-red"
-  }, "Not yet screened — unassessed exposure ahead of the December deadline."), uc.status === "screened-out" && /*#__PURE__*/React.createElement("p", {
-    className: "flag-plain"
-  }, "Screened: does not trigger APP 1.7. Decision recorded."), /*#__PURE__*/React.createElement("div", {
-    className: "card-actions"
-  }, uc.status === "assessed" && /*#__PURE__*/React.createElement("button", {
-    className: "btn",
-    onClick: () => {
-      setActiveId(uc.id);
-      setView("outputs");
-    }
-  }, "View the three outputs →"), uc.status === "outstanding" && /*#__PURE__*/React.createElement("button", {
-    className: "btn btn-bright",
-    onClick: () => startScreening(uc)
-  }, "Start screening →")))))), /*#__PURE__*/React.createElement("div", {
-    className: "ghost-row"
-  }, /*#__PURE__*/React.createElement(Ghost, {
-    label: "Would connect to: agency AI Use Case Register",
-    detail: "Register entries generated here would link to (not duplicate) the agency's mandated internal register — one record, one owner, no parallel copies."
-  }), /*#__PURE__*/React.createElement(Ghost, {
-    label: "Would connect to: CMDB / systems inventory",
-    detail: "Each use case would reference the system record it runs on, so a system change can trigger a re-assessment prompt."
-  }), /*#__PURE__*/React.createElement(Ghost, {
-    label: "Would connect to: DTA 6-monthly reporting",
-    detail: "Today this reporting step is an email to ai@dta.gov.au — no shared schema, no API. Exports here would target that format until something better exists."
-  })), /*#__PURE__*/React.createElement("section", {
+    className: "gov-top"
+  }, /*#__PURE__*/React.createElement("h3", null, d.name), d.status === "this_tool" ? /*#__PURE__*/React.createElement(Pill, {
+    tone: "blue"
+  }, "THIS TOOL — PROTOTYPE") : /*#__PURE__*/React.createElement(Pill, {
+    tone: "grey"
+  }, "NOT YET CONNECTED")), /*#__PURE__*/React.createElement("dl", {
+    className: "gov-meta"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("dt", null, "Reference"), /*#__PURE__*/React.createElement("dd", null, d.ref)), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("dt", null, "Owner"), /*#__PURE__*/React.createElement("dd", null, d.owner)), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("dt", null, "Related use cases"), /*#__PURE__*/React.createElement("dd", null, d.related))), /*#__PURE__*/React.createElement("p", {
+    className: "gov-note"
+  }, d.note))))), view === "about" && loaded && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("h2", {
+    className: "page-h"
+  }, "About this prototype"), /*#__PURE__*/React.createElement("section", {
+    className: "panel"
+  }, /*#__PURE__*/React.createElement("h3", null, "A quick exercise, not a finished system"), /*#__PURE__*/React.createElement("p", null, "Disclose is a fast prototype exploring the problem space: what would it take for an agency to determine, disclose, and prove its APP 1.7 compliance? It is not a finished or authoritative system. A real implementation would need to be worked through ", /*#__PURE__*/React.createElement("em", null, "with"), " the people it affects — citizens, front-line staff, governance practitioners — not developed for them in isolation."), /*#__PURE__*/React.createElement("p", null, /*#__PURE__*/React.createElement("strong", null, "How it works:"), " Screen (3 plain-language questions, ~2 minutes) → Assess (structured form, ~15–20 minutes, by an AI Governance Specialist) → three generated outputs: a register-ready entry, a citizen-facing notice, and an executive summary."), /*#__PURE__*/React.createElement("p", {
+    className: "about-list-intro"
+  }, "An open question this exercise raises, rather than a claim it's been done: who would need to be in the room next?"), /*#__PURE__*/React.createElement("ul", {
+    className: "about-list"
+  }, /*#__PURE__*/React.createElement("li", null, "Business and system owners"), /*#__PURE__*/React.createElement("li", null, "AI Governance Specialists"), /*#__PURE__*/React.createElement("li", null, "A dedicated technical validator — the role banks call an \"AI Model Validator\": someone who verifies that claims made about a model are actually true, not just documents them"), /*#__PURE__*/React.createElement("li", null, "Legal and privacy teams"), /*#__PURE__*/React.createElement("li", null, "Citizen and community representatives"), /*#__PURE__*/React.createElement("li", null, "The DTA and equivalent state bodies")), /*#__PURE__*/React.createElement("p", {
+    className: "about-gap"
+  }, "Named gap: procurement/vendor input and a regulator-facing (OAIC/DTA) view are out of scope for this prototype — deliberately named here rather than silently absent."), /*#__PURE__*/React.createElement("p", {
+    className: "about-caveat"
+  }, "This stakeholder model and review structure is a first-pass reasoning exercise, not a validated design — in particular, whether legal review is needed on every Medium/High risk case or only on genuinely novel ones is an open question this exercise raises rather than answers. Real design requires mapping actual workload, risk appetite, and precedent with the people who'd do this work.")), /*#__PURE__*/React.createElement("section", {
     className: "gap-panel",
     "aria-label": "Systemic gap"
   }, /*#__PURE__*/React.createElement(Eyebrow, {
-    color: "#FF4D6D"
-  }, "SYSTEMIC GAP — NOT SOLVED BY THIS TOOL"), /*#__PURE__*/React.createElement("h2", null, "Every agency does this alone"), /*#__PURE__*/React.createElement("p", null, "94 mandatory Commonwealth entities each keep their own AI use case register and submit it to the DTA every six months by email. There is no shared schema, no public use-case-level register, and no visible mechanism for cross-agency aggregation — the DTA centralises high-level transparency statements only. Internationally, Estonia's X-Road links decentralised registers through secure exchange (\"data resides where it is created\"), while the EU AI Act mandates a central public database for high-risk systems. Australia currently sits at neither end. This tool is scoped to what a single agency controls; whether disclosure should aggregate across government is an open policy question, named here rather than papered over.")), /*#__PURE__*/React.createElement("section", {
+    color: "#D32F2F"
+  }, "SYSTEMIC GAP — NOT SOLVED BY THIS TOOL"), /*#__PURE__*/React.createElement("h3", null, "Every agency does this alone"), /*#__PURE__*/React.createElement("p", null, "94 mandatory Commonwealth entities each keep their own AI use case register and submit it to the DTA every six months by email. There is no shared schema, no public use-case-level register, and no visible mechanism for cross-agency aggregation — the DTA centralises high-level transparency statements only. Internationally, Estonia's X-Road links decentralised registers through secure exchange (\"data resides where it is created\"), while the EU AI Act mandates a central public database for high-risk systems. Australia currently sits at neither end. This tool is scoped to what a single agency controls; whether disclosure should aggregate across government is an open policy question, named here rather than papered over.")), /*#__PURE__*/React.createElement("section", {
     className: "future-panel",
     "aria-label": "Future state"
   }, /*#__PURE__*/React.createElement("span", {
     className: "ghost-tag"
   }, "FUTURE STATE — NOT BUILT, DELIBERATELY"), /*#__PURE__*/React.createElement("p", null, "This tool is rules-based: plain-language questions, deterministic logic, generated outputs. No AI sits in the assessment or determination path — a compliance instrument that is itself a black box would undermine the transparency it argues for. A later version could add ", /*#__PURE__*/React.createElement("strong", null, "AI-assisted drafting"), " of the plain-language citizen notice (human-reviewed before publishing) and ", /*#__PURE__*/React.createElement("strong", null, "flagging of borderline screenings"), " for human escalation. It would never include AI making the APP 1.7 trigger determination or publishing a disclosure without review.")), /*#__PURE__*/React.createElement("footer", {
     className: "foot"
-  }, "Jurisdictional note: APP 1.7 is a Commonwealth Privacy Act obligation. Victorian state entities operate under the Privacy and Data Protection Act 2014 (Vic) and OVIC guidance, with no equivalent mandated central AI use case register. This is a public-sector-wide demonstration piece, not legal advice on any specific agency's obligations. All example use cases are hypothetical.")), view === "prestart" && /*#__PURE__*/React.createElement("main", {
+  }, "Jurisdictional note: APP 1.7 is a Commonwealth Privacy Act obligation. Victorian state entities operate under the Privacy and Data Protection Act 2014 (Vic) and OVIC guidance, with no equivalent mandated central AI use case register. This is a public-sector-wide demonstration piece, not legal advice on any specific agency's obligations. All example use cases are hypothetical. Role switching and identities are mock — no real authentication.")), view === "prestart" && /*#__PURE__*/React.createElement("div", {
     className: "narrow"
   }, /*#__PURE__*/React.createElement(Eyebrow, {
-    color: "#00E5FF"
-  }, "BEFORE YOU START"), /*#__PURE__*/React.createElement("h2", null, "Two steps, three documents at the end"), /*#__PURE__*/React.createElement("div", {
+    color: "#0066CC"
+  }, "BEFORE YOU START"), /*#__PURE__*/React.createElement("h2", {
+    className: "page-h"
+  }, "Two steps, three documents at the end"), /*#__PURE__*/React.createElement("div", {
     className: "pre-steps"
   }, /*#__PURE__*/React.createElement("div", {
     className: "pre-step"
@@ -1132,17 +1358,22 @@ function App() {
   }, /*#__PURE__*/React.createElement("span", {
     className: "p-n"
   }, "2"), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("strong", null, "Full assessment — about 15–20 minutes."), /*#__PURE__*/React.createElement("p", null, "A structured form covering what the system does, the data it uses, who's accountable, the risk ratings, and the testing evidence behind it. Usually completed by an AI Governance Specialist — this step needs both technical and policy literacy.")))), /*#__PURE__*/React.createElement("p", null, "At the end, one set of answers generates three documents: a register-ready entry, a plain-language notice for the people affected, and an executive summary row. Your progress is saved on this device — you can leave and come back."), /*#__PURE__*/React.createElement("button", {
-    className: "btn btn-bright btn-big",
+    className: "btn btn-primary btn-big",
     onClick: () => setView("screening")
   }, "Start →"), /*#__PURE__*/React.createElement("button", {
     className: "link-back",
-    onClick: () => setView("dashboard")
-  }, "← Back to dashboard")), view === "screening" && /*#__PURE__*/React.createElement("main", {
+    onClick: () => {
+      setWorkflowMode(false);
+      setView("dashboard");
+    }
+  }, "← Back to dashboard")), view === "screening" && /*#__PURE__*/React.createElement("div", {
     className: "narrow"
   }, /*#__PURE__*/React.createElement(Eyebrow, {
-    color: "#00E5FF"
-  }, "STEP 1 OF 2 — SCREENING · FOR THE BUSINESS OWNER"), /*#__PURE__*/React.createElement("h2", null, "Does this use case trigger APP 1.7?"), /*#__PURE__*/React.createElement("p", {
-    className: "lede"
+    color: "#0066CC"
+  }, "STEP 1 OF 2 — SCREENING · FOR THE BUSINESS OWNER"), /*#__PURE__*/React.createElement("h2", {
+    className: "page-h"
+  }, "Does this use case trigger APP 1.7?"), /*#__PURE__*/React.createElement("p", {
+    className: "page-lede"
   }, "Three plain-language questions. If the answer to all three is yes, the use case needs a full assessment before December 2026."), !activeId && /*#__PURE__*/React.createElement("div", {
     className: "field"
   }, /*#__PURE__*/React.createElement("label", {
@@ -1174,30 +1405,40 @@ function App() {
       [q.key]: false
     }))
   }, "No")))), screenResult === null && /*#__PURE__*/React.createElement("button", {
-    className: "btn btn-bright btn-big",
+    className: "btn btn-primary btn-big",
     disabled: SCREENING_QUESTIONS.some(q => screening[q.key] === undefined) || !activeId && !screenName.trim(),
     onClick: finishScreening
   }, "Get the screening result"), screenResult === "triggered" && /*#__PURE__*/React.createElement("div", {
     className: "result result-trig",
     role: "status"
-  }, /*#__PURE__*/React.createElement("strong", null, "APP 1.7 is triggered."), /*#__PURE__*/React.createElement("p", null, "This use case uses personal information in automated decision-making. It needs a full assessment, a register entry, and a citizen-facing disclosure. It has been routed to your AI Governance Specialist."), /*#__PURE__*/React.createElement("button", {
-    className: "btn btn-bright",
+  }, /*#__PURE__*/React.createElement("strong", null, "APP 1.7 is triggered."), /*#__PURE__*/React.createElement("p", null, "This use case uses personal information in automated decision-making. It needs a full assessment, a register entry, and a citizen-facing disclosure. It has been routed to your AI Governance Specialist."), canAssess ? /*#__PURE__*/React.createElement("button", {
+    className: "btn btn-primary",
     onClick: beginAssessment
-  }, "Continue to the full assessment →")), screenResult === "not-triggered" && /*#__PURE__*/React.createElement("div", {
+  }, "Continue to the full assessment →") : /*#__PURE__*/React.createElement("p", {
+    className: "role-note"
+  }, "You're logged in as ", ROLES[role].role, ". The full assessment is completed by an AI Governance Specialist — switch role (top right) to continue as the specialist. Prototype role simulation, no real auth.")), screenResult === "not-triggered" && /*#__PURE__*/React.createElement("div", {
     className: "result",
     role: "status"
   }, /*#__PURE__*/React.createElement("strong", null, "Not triggered — decision recorded."), /*#__PURE__*/React.createElement("p", null, "Based on these answers, APP 1.7 does not apply. The screening result and answers are logged, so there is an audit trail showing this was considered, not missed. Re-screen if the use case changes."), /*#__PURE__*/React.createElement("button", {
     className: "btn",
-    onClick: () => setView("dashboard")
+    onClick: () => {
+      setWorkflowMode(false);
+      setView("dashboard");
+    }
   }, "Back to dashboard")), /*#__PURE__*/React.createElement("button", {
     className: "link-back",
-    onClick: () => setView("dashboard")
-  }, "← Cancel and return to dashboard")), view === "assessment" && /*#__PURE__*/React.createElement("main", {
+    onClick: () => {
+      setWorkflowMode(false);
+      setView("dashboard");
+    }
+  }, "← Cancel and return to dashboard")), view === "assessment" && /*#__PURE__*/React.createElement("div", {
     className: "narrow"
   }, /*#__PURE__*/React.createElement(Eyebrow, {
-    color: "#00E5FF"
-  }, "STEP 2 OF 2 — FULL ASSESSMENT · FOR THE AI GOVERNANCE SPECIALIST"), /*#__PURE__*/React.createElement("h2", null, "Structured assessment"), /*#__PURE__*/React.createElement("p", {
-    className: "lede"
+    color: "#0066CC"
+  }, "STEP 2 OF 2 — FULL ASSESSMENT · FOR THE AI GOVERNANCE SPECIALIST"), /*#__PURE__*/React.createElement("h2", {
+    className: "page-h"
+  }, "Structured assessment"), /*#__PURE__*/React.createElement("p", {
+    className: "page-lede"
   }, "One set of answers generates all three outputs. Write for a member of the public — the citizen notice is built directly from these words."), /*#__PURE__*/React.createElement("div", {
     className: "field"
   }, /*#__PURE__*/React.createElement("label", {
@@ -1507,7 +1748,7 @@ function App() {
   })), highRiskDraft && /*#__PURE__*/React.createElement("div", {
     className: "high-risk-block"
   }, /*#__PURE__*/React.createElement("p", {
-    className: "q-help"
+    className: "q-help hr-help"
   }, "A High risk rating requires review dates — high-risk use cases can't sit unreviewed."), /*#__PURE__*/React.createElement("div", {
     className: "field"
   }, /*#__PURE__*/React.createElement("label", {
@@ -1688,17 +1929,22 @@ function App() {
   }, "No / not yet")))), /*#__PURE__*/React.createElement("p", {
     className: "q-help"
   }, "Honest boundary: this tool can force these questions to be answered; it cannot verify your systems actually do it. Answering \"no\" is recorded and flagged — it is not a blocker, it is a finding.")), /*#__PURE__*/React.createElement("button", {
-    className: "btn btn-bright btn-big",
+    className: "btn btn-primary btn-big",
     disabled: !draftComplete || savePhase !== null,
     onClick: submitAssessment
   }, savePhase === "saving" ? "Saving…" : savePhase === "saved" ? "Saved ✓" : "Save as draft and generate the three outputs →"), /*#__PURE__*/React.createElement("button", {
     className: "link-back",
-    onClick: () => setView("dashboard")
-  }, "← Cancel and return to dashboard")), view === "outputs" && active && active.assessment && /*#__PURE__*/React.createElement("main", null, /*#__PURE__*/React.createElement(Eyebrow, {
-    color: "#00E5FF"
+    onClick: () => {
+      setWorkflowMode(false);
+      setView("dashboard");
+    }
+  }, "← Cancel and return to dashboard")), view === "outputs" && loaded && active && active.assessment && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Eyebrow, {
+    color: "#0066CC"
   }, "ONE ASSESSMENT → THREE OUTPUTS"), /*#__PURE__*/React.createElement("div", {
     className: "out-head"
-  }, /*#__PURE__*/React.createElement("h2", null, active.name), /*#__PURE__*/React.createElement(LayerLamps, {
+  }, /*#__PURE__*/React.createElement("h2", {
+    className: "page-h"
+  }, active.name), /*#__PURE__*/React.createElement(LayerLamps, {
     uc: active,
     size: "lg"
   })), active.assessment.reviewStatus === "approved" ? /*#__PURE__*/React.createElement("div", {
@@ -1709,18 +1955,20 @@ function App() {
     role: "status"
   }, /*#__PURE__*/React.createElement("div", {
     className: "banner-text"
-  }, /*#__PURE__*/React.createElement("strong", null, "DRAFT — low risk (both ratings Low)."), " The AI Governance Specialist can self-certify this assessment; no separate approval gate applies at this tier."), /*#__PURE__*/React.createElement("label", {
+  }, /*#__PURE__*/React.createElement("strong", null, "DRAFT — low risk (both ratings Low)."), " The AI Governance Specialist can self-certify this assessment; no separate approval gate applies at this tier."), canAssess ? /*#__PURE__*/React.createElement("label", {
     className: "selfcert"
   }, /*#__PURE__*/React.createElement("input", {
     type: "checkbox",
     checked: false,
     onChange: selfCertify
-  }), "I confirm this assessment is accurate — self-certification, AI Governance Specialist")) : /*#__PURE__*/React.createElement("div", {
+  }), "I confirm this assessment is accurate — self-certification, AI Governance Specialist") : /*#__PURE__*/React.createElement("p", {
+    className: "role-note"
+  }, "Pending self-certification by an AI Governance Specialist. Your current role (", ROLES[role].role, ") cannot certify — switch role to act. Prototype simulation.")) : /*#__PURE__*/React.createElement("div", {
     className: "banner banner-draft",
     role: "status"
   }, /*#__PURE__*/React.createElement("div", {
     className: "banner-text"
-  }, /*#__PURE__*/React.createElement("strong", null, "DRAFT — ", active.assessment.inherentRisk === "High" || active.assessment.residualRisk === "High" ? "high" : "medium", " risk: two named sign-offs required."), " ", "The citizen notice and register entry stay marked draft until both are recorded. Neither sign-off can be provided by an executive role — executives govern portfolio risk and resourcing; these fields verify technical and legal detail, which needs the person who can actually check it."), /*#__PURE__*/React.createElement("div", {
+  }, /*#__PURE__*/React.createElement("strong", null, "DRAFT — ", isHighRisk(active.assessment) ? "high" : "medium", " risk: two named sign-offs required."), " ", "The citizen notice and register entry stay marked draft until both are recorded. Neither sign-off can be provided by an executive role — executives govern portfolio risk and resourcing; these fields verify technical and legal detail, which needs the person who can actually check it."), /*#__PURE__*/React.createElement("div", {
     className: "signoff"
   }, /*#__PURE__*/React.createElement("p", {
     className: "signoff-title"
@@ -1728,7 +1976,7 @@ function App() {
     className: "signoff-scope"
   }, "verifies the technical claims: model behaviour, testing evidence, decision logic")), active.assessment.techBy ? /*#__PURE__*/React.createElement("p", {
     className: "signoff-done"
-  }, "✓ Recorded — ", active.assessment.techBy, ", ", active.assessment.techDate) : /*#__PURE__*/React.createElement("div", {
+  }, "✓ Recorded — ", active.assessment.techBy, ", ", active.assessment.techDate) : canTechSign ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
     className: "approve-fields"
   }, /*#__PURE__*/React.createElement("div", {
     className: "approve-field"
@@ -1738,7 +1986,7 @@ function App() {
     id: "tech-name",
     value: techNameIn,
     onChange: e => setTechNameIn(e.target.value),
-    placeholder: "Hypothetical only — e.g. A. Nguyen, AI Governance Specialist"
+    placeholder: "Hypothetical only — e.g. J. Rivera, AI Governance Specialist"
   })), /*#__PURE__*/React.createElement("div", {
     className: "approve-field"
   }, /*#__PURE__*/React.createElement("label", {
@@ -1750,9 +1998,14 @@ function App() {
     onChange: e => setTechDateIn(e.target.value)
   })), /*#__PURE__*/React.createElement("button", {
     className: "btn btn-approve",
-    disabled: !techNameIn.trim() || !techDateIn,
+    disabled: !techNameIn.trim() || !techDateIn || techSignoffConflict(techNameIn),
     onClick: () => recordSignoff("tech")
-  }, "Record technical sign-off ✓"))), /*#__PURE__*/React.createElement("div", {
+  }, "Record technical sign-off ✓")), techSignoffConflict(techNameIn) && /*#__PURE__*/React.createElement("p", {
+    className: "signoff-conflict",
+    role: "alert"
+  }, "✕ This matches the person recorded as completing the assessment (", active.assessment.submittedBy || active.owner, "). Independent technical review requires a different named individual — this is segregation of duties, not a second copy of the same signature.")) : /*#__PURE__*/React.createElement("p", {
+    className: "role-note"
+  }, "Pending — requires the AI Governance Specialist role. Your current role (", ROLES[role].role, ") cannot record this sign-off.")), /*#__PURE__*/React.createElement("div", {
     className: "signoff"
   }, /*#__PURE__*/React.createElement("p", {
     className: "signoff-title"
@@ -1760,7 +2013,7 @@ function App() {
     className: "signoff-scope"
   }, "verifies legal authority to automate this decision and that citizen recourse is legally adequate")), active.assessment.legalBy ? /*#__PURE__*/React.createElement("p", {
     className: "signoff-done"
-  }, "✓ Recorded — ", active.assessment.legalBy, ", ", active.assessment.legalDate) : /*#__PURE__*/React.createElement("div", {
+  }, "✓ Recorded — ", active.assessment.legalBy, ", ", active.assessment.legalDate) : canLegalSign ? /*#__PURE__*/React.createElement("div", {
     className: "approve-fields"
   }, /*#__PURE__*/React.createElement("div", {
     className: "approve-field"
@@ -1784,81 +2037,17 @@ function App() {
     className: "btn btn-approve",
     disabled: !legalNameIn.trim() || !legalDateIn,
     onClick: () => recordSignoff("legal")
-  }, "Record legal sign-off ✓")))), !isL2Capable(active.assessment) && /*#__PURE__*/React.createElement("p", {
+  }, "Record legal sign-off ✓")) : /*#__PURE__*/React.createElement("p", {
+    className: "role-note"
+  }, "Pending — requires the Legal Counsel role. Your current role (", ROLES[role].role, ") cannot record this sign-off."))), !isL2Capable(active.assessment) && /*#__PURE__*/React.createElement("p", {
     className: "flag-amber big-flag",
     role: "alert"
   }, "⚠ Documented only. The paperwork below is complete, but at least one runtime capability is missing — so the promises in the citizen notice are not yet backed by the system. This is the most common failure mode; it is flagged, not hidden."), /*#__PURE__*/React.createElement("div", {
     className: "outputs"
-  }, /*#__PURE__*/React.createElement("section", {
-    className: "out-card"
-  }, /*#__PURE__*/React.createElement(Eyebrow, null, "OUTPUT A — REGISTER-READY ENTRY"), /*#__PURE__*/React.createElement("p", {
-    className: "reg-subhead"
-  }, "DTA Standard for Accountability"), /*#__PURE__*/React.createElement("dl", {
-    className: "reg"
-  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("dt", null, "Use case name"), /*#__PURE__*/React.createElement("dd", null, active.name)), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("dt", null, "Reference number"), /*#__PURE__*/React.createElement("dd", null, active.id.toUpperCase())), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("dt", null, "Description"), /*#__PURE__*/React.createElement("dd", null, active.assessment.description || "Not recorded")), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("dt", null, "AI technology type"), /*#__PURE__*/React.createElement("dd", null, AI_TECH[active.assessment.systemType] || "Not recorded")), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("dt", null, "Lifecycle stage"), /*#__PURE__*/React.createElement("dd", null, LIFECYCLE[active.assessment.lifecycle] || "Not recorded")), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("dt", null, "Domain"), /*#__PURE__*/React.createElement("dd", null, active.assessment.domain || "Not recorded")), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("dt", null, "Usage pattern"), /*#__PURE__*/React.createElement("dd", null, active.assessment.usagePattern || "Not recorded")), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("dt", null, "Accountable owner"), /*#__PURE__*/React.createElement("dd", null, active.owner, active.assessment.ownerEmail ? " · " + active.assessment.ownerEmail : "")), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("dt", null, "In-scope criteria"), /*#__PURE__*/React.createElement("dd", null, active.assessment.inScopeCriteria || "Not recorded")), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("dt", null, "Inherent risk"), /*#__PURE__*/React.createElement("dd", null, active.assessment.inherentRisk || "Not recorded")), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("dt", null, "Residual risk"), /*#__PURE__*/React.createElement("dd", null, active.assessment.residualRisk || "Not recorded")), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("dt", null, "Impact assessment last updated"), /*#__PURE__*/React.createElement("dd", null, active.assessment.impactAssessmentDate || "Not recorded")), isHighRisk(active.assessment) && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("dt", null, "Last review date"), /*#__PURE__*/React.createElement("dd", null, active.assessment.lastReviewDate || "Not recorded")), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("dt", null, "Next review date"), /*#__PURE__*/React.createElement("dd", null, active.assessment.nextReviewDate || "Not recorded")))), /*#__PURE__*/React.createElement("p", {
-    className: "reg-subhead"
-  }, "Testing evidence"), /*#__PURE__*/React.createElement("div", {
-    className: "evidence",
-    "aria-label": "Test record"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "ev-row"
-  }, /*#__PURE__*/React.createElement("span", {
-    className: "ev-label"
-  }, "What was tested"), /*#__PURE__*/React.createElement("p", null, active.assessment.testingSummary || "Not recorded")), /*#__PURE__*/React.createElement("div", {
-    className: "ev-row"
-  }, /*#__PURE__*/React.createElement("span", {
-    className: "ev-label"
-  }, "Test date"), /*#__PURE__*/React.createElement("p", null, active.assessment.testDate || "Not recorded")), /*#__PURE__*/React.createElement("div", {
-    className: "ev-row"
-  }, /*#__PURE__*/React.createElement("span", {
-    className: "ev-label"
-  }, "Criteria"), /*#__PURE__*/React.createElement("p", null, active.assessment.testCriteria || "Not recorded")), /*#__PURE__*/React.createElement("div", {
-    className: "ev-row ev-result"
-  }, /*#__PURE__*/React.createElement("span", {
-    className: "ev-label"
-  }, "Result"), /*#__PURE__*/React.createElement("p", null, active.assessment.testResult || "Not recorded"))), /*#__PURE__*/React.createElement("div", {
-    className: "trace",
-    "aria-label": "Worked example decision trace"
-  }, /*#__PURE__*/React.createElement("p", {
-    className: "trace-title"
-  }, "Worked example — one hypothetical case, traced", /*#__PURE__*/React.createElement("span", {
-    className: "trace-stamp"
-  }, active.assessment.traceTimestamp ? "logged " + active.assessment.traceTimestamp : "timestamp not logged")), /*#__PURE__*/React.createElement("div", {
-    className: "trace-step"
-  }, /*#__PURE__*/React.createElement("span", {
-    className: "trace-label"
-  }, "Input"), /*#__PURE__*/React.createElement("p", null, active.assessment.traceInput || "Not recorded")), /*#__PURE__*/React.createElement("div", {
-    className: "trace-arrow",
-    "aria-hidden": "true"
-  }, "↓"), /*#__PURE__*/React.createElement("div", {
-    className: "trace-step"
-  }, /*#__PURE__*/React.createElement("span", {
-    className: "trace-label"
-  }, "What the system checked"), /*#__PURE__*/React.createElement("p", null, active.assessment.traceChecked || "Not recorded")), /*#__PURE__*/React.createElement("div", {
-    className: "trace-arrow",
-    "aria-hidden": "true"
-  }, "↓"), /*#__PURE__*/React.createElement("div", {
-    className: "trace-step"
-  }, /*#__PURE__*/React.createElement("span", {
-    className: "trace-label"
-  }, "What rule / step produced the outcome"), /*#__PURE__*/React.createElement("p", null, active.assessment.traceRule || "Not recorded")), /*#__PURE__*/React.createElement("div", {
-    className: "trace-arrow",
-    "aria-hidden": "true"
-  }, "↓"), /*#__PURE__*/React.createElement("div", {
-    className: "trace-step trace-result"
-  }, /*#__PURE__*/React.createElement("span", {
-    className: "trace-label"
-  }, "Result"), /*#__PURE__*/React.createElement("p", null, active.assessment.traceResult || "Not recorded"))), /*#__PURE__*/React.createElement("p", {
-    className: "reg-subhead"
-  }, "Beyond the standard — runtime & proof fields"), /*#__PURE__*/React.createElement("dl", {
-    className: "reg"
-  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("dt", null, "APP 1.7 trigger"), /*#__PURE__*/React.createElement("dd", null, "YES — personal information used in automated decision-making")), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("dt", null, "Data sources"), /*#__PURE__*/React.createElement("dd", null, active.assessment.dataSources)), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("dt", null, "Decision logic"), /*#__PURE__*/React.createElement("dd", null, active.assessment.decisionLogic)), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("dt", null, "Human oversight"), /*#__PURE__*/React.createElement("dd", null, OVERSIGHT[active.assessment.oversight])), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("dt", null, "Model / version"), /*#__PURE__*/React.createElement("dd", null, active.assessment.modelVersion || "Not recorded")), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("dt", null, "Developer / vendor"), /*#__PURE__*/React.createElement("dd", null, active.assessment.vendor || "Not recorded")), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("dt", null, "Review cadence"), /*#__PURE__*/React.createElement("dd", null, active.assessment.cadence || "Not recorded")), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("dt", null, "Training data"), /*#__PURE__*/React.createElement("dd", null, active.assessment.systemType === "rules" ? "Not applicable — rules-based, no training data" : active.assessment.trainingProvenance || "Not recorded")), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("dt", null, "Bias testing"), /*#__PURE__*/React.createElement("dd", null, BIAS_STATUS[active.assessment.biasTesting] || "Not recorded")), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("dt", null, "Bias notes"), /*#__PURE__*/React.createElement("dd", null, active.assessment.biasNotes || "None recorded")), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("dt", null, "Data retention"), /*#__PURE__*/React.createElement("dd", null, active.assessment.retention || "Not recorded")), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("dt", null, "Runtime rationale"), /*#__PURE__*/React.createElement("dd", null, active.assessment.rationaleOnDemand ? "AVAILABLE — case-specific rationale on request" : "NOT AVAILABLE — flagged for remediation")), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("dt", null, "Decision logging"), /*#__PURE__*/React.createElement("dd", null, active.assessment.loggedVersioned ? "Logged + timestamped, tied to logic version" : "NOT version-tied — flagged")), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("dt", null, "Change detection"), /*#__PURE__*/React.createElement("dd", null, active.assessment.driftReassess ? "Logic change prompts re-assessment" : "NO drift detection — flagged")), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("dt", null, "Status"), /*#__PURE__*/React.createElement("dd", null, isL2Capable(active.assessment) ? "PROVEN IN PRACTICE" : "DOCUMENTED ONLY — REMEDIATION REQUIRED")), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("dt", null, "Review"), /*#__PURE__*/React.createElement("dd", null, reviewLabel(active.assessment)))), /*#__PURE__*/React.createElement("button", {
-    className: "btn btn-dl",
-    onClick: () => downloadFile(active.id + "-register-entry.json", buildRegisterJSON(active), "application/json")
-  }, "↓ Download register entry (.json)"), /*#__PURE__*/React.createElement(Ghost, {
-    label: "Would connect to: agency AI Use Case Register",
-    detail: "Linking, not duplicating — this entry would reference the register record, not create a second source of truth."
-  })), /*#__PURE__*/React.createElement("section", {
+  }, /*#__PURE__*/React.createElement(RegisterEntry, {
+    key: active.id,
+    uc: active
+  }), /*#__PURE__*/React.createElement("section", {
     className: "out-card citizen"
   }, /*#__PURE__*/React.createElement(Eyebrow, null, "OUTPUT B — CITIZEN-FACING NOTICE"), /*#__PURE__*/React.createElement("div", {
     className: "notice"
@@ -1898,7 +2087,7 @@ function App() {
   }, "⚠ Hollow-disclosure check: this notice invites people to ask about their specific case, but the assessment says the system cannot currently produce a case-specific rationale. Publishing it as-is would promise something the agency can't deliver."), /*#__PURE__*/React.createElement("div", {
     className: "out-actions"
   }, /*#__PURE__*/React.createElement("button", {
-    className: "btn btn-bright",
+    className: "btn btn-primary",
     onClick: () => {
       setCitizenAction(null);
       setView("citizen");
@@ -1910,15 +2099,21 @@ function App() {
     className: "out-card"
   }, /*#__PURE__*/React.createElement(Eyebrow, null, "OUTPUT C — EXECUTIVE SUMMARY ROW"), /*#__PURE__*/React.createElement("table", {
     className: "exec"
-  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", null, "Use case"), /*#__PURE__*/React.createElement("th", null, "Owner"), /*#__PURE__*/React.createElement("th", null, "Oversight"), /*#__PURE__*/React.createElement("th", null, "Documented"), /*#__PURE__*/React.createElement("th", null, "Proven in Practice"), /*#__PURE__*/React.createElement("th", null, "Review"), /*#__PURE__*/React.createElement("th", null, "Dec 2026"))), /*#__PURE__*/React.createElement("tbody", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", null, active.name), /*#__PURE__*/React.createElement("td", null, active.owner), /*#__PURE__*/React.createElement("td", null, active.assessment.oversight === "each" ? "Every decision" : active.assessment.oversight === "sample" ? "Sample" : "None"), /*#__PURE__*/React.createElement("td", {
-    className: "ok"
-  }, "✓"), /*#__PURE__*/React.createElement("td", {
-    className: isL2Capable(active.assessment) ? "ok" : "warn"
-  }, isL2Capable(active.assessment) ? "✓" : "GAP"), /*#__PURE__*/React.createElement("td", {
-    className: active.assessment.reviewStatus === "approved" ? "ok" : "warn"
-  }, active.assessment.reviewStatus === "approved" ? "Final" : "Draft"), /*#__PURE__*/React.createElement("td", {
-    className: isL2Capable(active.assessment) ? "ok" : "warn"
-  }, isL2Capable(active.assessment) ? "Ready" : "At risk")))), /*#__PURE__*/React.createElement("details", {
+  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", null, "Use case"), /*#__PURE__*/React.createElement("th", null, "Owner"), /*#__PURE__*/React.createElement("th", null, "Oversight"), /*#__PURE__*/React.createElement("th", null, "Documented"), /*#__PURE__*/React.createElement("th", null, "Proven in Practice"), /*#__PURE__*/React.createElement("th", null, "Review"), /*#__PURE__*/React.createElement("th", null, "Dec 2026"))), /*#__PURE__*/React.createElement("tbody", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", null, active.name), /*#__PURE__*/React.createElement("td", null, active.owner), /*#__PURE__*/React.createElement("td", null, active.assessment.oversight === "each" ? "Every decision" : active.assessment.oversight === "sample" ? "Sample" : "None"), /*#__PURE__*/React.createElement("td", null, /*#__PURE__*/React.createElement(Pill, {
+    tone: "green"
+  }, "✓")), /*#__PURE__*/React.createElement("td", null, isL2Capable(active.assessment) ? /*#__PURE__*/React.createElement(Pill, {
+    tone: "blue"
+  }, "✓") : /*#__PURE__*/React.createElement(Pill, {
+    tone: "amber"
+  }, "GAP")), /*#__PURE__*/React.createElement("td", null, active.assessment.reviewStatus === "approved" ? /*#__PURE__*/React.createElement(Pill, {
+    tone: "blue"
+  }, "Final") : /*#__PURE__*/React.createElement(Pill, {
+    tone: "amber"
+  }, "Draft")), /*#__PURE__*/React.createElement("td", null, isL2Capable(active.assessment) ? /*#__PURE__*/React.createElement(Pill, {
+    tone: "green"
+  }, "Ready") : /*#__PURE__*/React.createElement(Pill, {
+    tone: "amber"
+  }, "At risk"))))), /*#__PURE__*/React.createElement("details", {
     className: "exec-evidence"
   }, /*#__PURE__*/React.createElement("summary", null, "Testing evidence — ", active.assessment.testResult || "not recorded"), /*#__PURE__*/React.createElement("div", {
     className: "ev-row"
@@ -1953,15 +2148,35 @@ function App() {
   }, "↓ Download summary row (.csv)"), /*#__PURE__*/React.createElement(Ghost, {
     label: "Would connect to: DTA 6-monthly reporting",
     detail: "Currently submitted by email to ai@dta.gov.au. An export here would match whatever format DTA accepts — the absence of a shared schema is part of the systemic gap."
-  }))), /*#__PURE__*/React.createElement("div", {
+  }))), /*#__PURE__*/React.createElement("section", {
+    className: "out-card activity-card",
+    "aria-label": "Activity log"
+  }, /*#__PURE__*/React.createElement(Eyebrow, null, "ACTIVITY LOG — WHO DID WHAT, WHEN"), (active.activity || []).length === 0 ? /*#__PURE__*/React.createElement("p", {
+    className: "activity-empty"
+  }, "No activity recorded yet for this use case.") : /*#__PURE__*/React.createElement("ol", {
+    className: "activity"
+  }, (active.activity || []).map((ev, i) => /*#__PURE__*/React.createElement("li", {
+    key: i
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "activity-ts"
+  }, ev.ts), /*#__PURE__*/React.createElement("span", {
+    className: "activity-text"
+  }, ev.text)))), /*#__PURE__*/React.createElement("p", {
+    className: "q-help"
+  }, "Recorded automatically from the logged-in role at the time of each action — mock identities, prototype only.")), /*#__PURE__*/React.createElement("div", {
     className: "out-actions"
-  }, /*#__PURE__*/React.createElement("button", {
+  }, canAssess && /*#__PURE__*/React.createElement("button", {
     className: "btn",
     onClick: editAssessment
   }, "✎ Edit this assessment"), /*#__PURE__*/React.createElement("button", {
-    className: "btn btn-bright",
-    onClick: () => setView("dashboard")
-  }, "← Back to portfolio dashboard"))), view === "citizen" && active && active.assessment && /*#__PURE__*/React.createElement("main", {
+    className: "btn btn-primary",
+    onClick: () => {
+      setWorkflowMode(false);
+      setView("usecases");
+    }
+  }, "← Back to use cases")), isExec && /*#__PURE__*/React.createElement("p", {
+    className: "role-note"
+  }, "Executive view is read-only — no edit or sign-off actions. Switch role (top right) to act. Prototype simulation.")), view === "citizen" && loaded && active && active.assessment && /*#__PURE__*/React.createElement("div", {
     className: "citizen-wrap"
   }, /*#__PURE__*/React.createElement("p", {
     className: "citizen-frame"
@@ -1980,8 +2195,8 @@ function App() {
     className: "cz-body"
   }, /*#__PURE__*/React.createElement("p", {
     className: "cz-ref"
-  }, "Decision reference ", active.id.toUpperCase(), "-2318", active.assessment.reviewStatus !== "approved" && /*#__PURE__*/React.createElement("span", {
-    className: "cz-draft-tag"
+  }, "Decision reference ", active.id.toUpperCase(), "-2318", active.assessment.reviewStatus !== "approved" && /*#__PURE__*/React.createElement(Pill, {
+    tone: "amber"
   }, "DRAFT NOTICE — not yet approved for publication")), /*#__PURE__*/React.createElement("h2", null, "How this decision was made"), /*#__PURE__*/React.createElement("p", null, active.assessment.purpose), /*#__PURE__*/React.createElement("h3", null, "What information we used"), /*#__PURE__*/React.createElement("p", null, active.assessment.dataSources), /*#__PURE__*/React.createElement("h3", null, "How the automated part works"), /*#__PURE__*/React.createElement("p", null, active.assessment.decisionLogic), /*#__PURE__*/React.createElement("h3", null, "Was a person involved?"), /*#__PURE__*/React.createElement("p", null, OVERSIGHT_CITIZEN[active.assessment.oversight]), /*#__PURE__*/React.createElement("h3", null, "How long we keep your information"), /*#__PURE__*/React.createElement("p", null, active.assessment.retention || "Not recorded."), /*#__PURE__*/React.createElement("h3", null, "An example of how the system decides"), /*#__PURE__*/React.createElement("p", {
     className: "notice-example-intro"
   }, "Here's how the system handled one (invented) case, step by step. If you ask about your decision, this is the kind of explanation you'll get — for your own circumstances:"), /*#__PURE__*/React.createElement("div", {
@@ -2015,7 +2230,7 @@ function App() {
   }, "Result"), /*#__PURE__*/React.createElement("p", null, active.assessment.traceResult || "Not recorded"))), /*#__PURE__*/React.createElement("div", {
     className: "cz-actions"
   }, /*#__PURE__*/React.createElement("button", {
-    className: "btn btn-bright",
+    className: "btn btn-primary",
     onClick: () => setCitizenAction("question")
   }, "Ask a question about this decision"), /*#__PURE__*/React.createElement("button", {
     className: "btn",
@@ -2027,10 +2242,477 @@ function App() {
     className: "cz-action-note",
     role: "status"
   }, "In a real service, this would lodge a request for a person to review the decision. If you're not satisfied with the review, you can complain to the agency, and then to the Office of the Australian Information Commissioner (OAIC). (Prototype — no form behind this button.)"))), /*#__PURE__*/React.createElement("button", {
-    className: "btn btn-bright",
+    className: "btn btn-primary",
     onClick: () => setView("outputs")
-  }, "← Back to the three outputs")));
+  }, "← Back to the three outputs")))));
 }
+
+/* ---------- Use Cases page ---------- */
+
+function UseCasesPage({
+  useCases,
+  openUseCase,
+  startScreening,
+  canScreen
+}) {
+  const [filter, setFilter] = useState("all");
+  const shown = useCases.filter(u => filter === "all" ? true : u.status === filter);
+  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("h2", {
+    className: "page-h"
+  }, "Use Cases"), /*#__PURE__*/React.createElement("p", {
+    className: "page-lede"
+  }, "The register: every use case, its risk, and both compliance layers.", " ", /*#__PURE__*/React.createElement("strong", null, "Documented"), " — the use case is written up and on the register (done once, re-done on change). ", /*#__PURE__*/React.createElement("strong", null, "Proven in Practice"), " — the agency can show, for any individual decision, what happened and why (has to hold every time the system runs). A use case can be fully documented and still fail the person it decides about."), /*#__PURE__*/React.createElement("div", {
+    className: "uc-toolbar"
+  }, /*#__PURE__*/React.createElement("label", {
+    className: "uc-filter"
+  }, "Filter", /*#__PURE__*/React.createElement("select", {
+    value: filter,
+    onChange: e => setFilter(e.target.value)
+  }, /*#__PURE__*/React.createElement("option", {
+    value: "all"
+  }, "All"), /*#__PURE__*/React.createElement("option", {
+    value: "assessed"
+  }, "Assessed"), /*#__PURE__*/React.createElement("option", {
+    value: "outstanding"
+  }, "Outstanding"), /*#__PURE__*/React.createElement("option", {
+    value: "screened-out"
+  }, "Screened out")))), /*#__PURE__*/React.createElement("div", {
+    className: "uc-table-wrap panel"
+  }, /*#__PURE__*/React.createElement("table", {
+    className: "exec uc-table"
+  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", null, "Ref"), /*#__PURE__*/React.createElement("th", null, "Use case"), /*#__PURE__*/React.createElement("th", null, "Owner"), /*#__PURE__*/React.createElement("th", null, "Risk (inh / res)"), /*#__PURE__*/React.createElement("th", null, "Documented"), /*#__PURE__*/React.createElement("th", null, "Proven in Practice"), /*#__PURE__*/React.createElement("th", null, "Review"), /*#__PURE__*/React.createElement("th", null, "Actions"))), /*#__PURE__*/React.createElement("tbody", null, shown.map(uc => {
+    const a = uc.assessment;
+    return /*#__PURE__*/React.createElement("tr", {
+      key: uc.id
+    }, /*#__PURE__*/React.createElement("td", {
+      className: "mono-id"
+    }, uc.id.toUpperCase()), /*#__PURE__*/React.createElement("td", null, uc.name), /*#__PURE__*/React.createElement("td", null, uc.owner || "—"), /*#__PURE__*/React.createElement("td", null, a && a.inherentRisk ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Pill, {
+      tone: RISK_TONE[a.inherentRisk]
+    }, a.inherentRisk), " ", /*#__PURE__*/React.createElement(Pill, {
+      tone: RISK_TONE[a.residualRisk]
+    }, a.residualRisk)) : uc.status === "screened-out" ? /*#__PURE__*/React.createElement(Pill, {
+      tone: "grey"
+    }, "Screened out") : /*#__PURE__*/React.createElement(Pill, {
+      tone: "red"
+    }, "Not assessed")), /*#__PURE__*/React.createElement("td", null, uc.status === "assessed" ? /*#__PURE__*/React.createElement(Pill, {
+      tone: "green"
+    }, "✓") : /*#__PURE__*/React.createElement(Pill, {
+      tone: "grey"
+    }, "—")), /*#__PURE__*/React.createElement("td", null, uc.status === "assessed" ? isL2Capable(a) ? /*#__PURE__*/React.createElement(Pill, {
+      tone: "blue"
+    }, "✓") : /*#__PURE__*/React.createElement(Pill, {
+      tone: "amber"
+    }, "GAP") : /*#__PURE__*/React.createElement(Pill, {
+      tone: "grey"
+    }, "—")), /*#__PURE__*/React.createElement("td", null, uc.status === "assessed" ? a.reviewStatus === "approved" ? /*#__PURE__*/React.createElement(Pill, {
+      tone: "blue"
+    }, "Final") : /*#__PURE__*/React.createElement(Pill, {
+      tone: "amber"
+    }, "Draft") : /*#__PURE__*/React.createElement(Pill, {
+      tone: "grey"
+    }, "—")), /*#__PURE__*/React.createElement("td", {
+      className: "uc-actions"
+    }, uc.status === "assessed" && /*#__PURE__*/React.createElement("button", {
+      className: "btn btn-sm",
+      onClick: () => openUseCase(uc)
+    }, "View →"), uc.status === "outstanding" && canScreen && /*#__PURE__*/React.createElement("button", {
+      className: "btn btn-sm btn-primary",
+      onClick: () => startScreening(uc)
+    }, "Start screening →"), uc.status === "outstanding" && !canScreen && /*#__PURE__*/React.createElement("span", {
+      className: "role-note-inline"
+    }, "Screening requires Business Owner or Specialist role"), uc.status === "screened-out" && /*#__PURE__*/React.createElement("span", {
+      className: "role-note-inline"
+    }, "No APP 1.7 obligation — decision recorded")));
+  })))));
+}
+
+/* ============================================================
+   Styles — dark navigation chrome, light high-contrast content.
+   Sidebar/header: #0a0a0a, white text, cyan active accent.
+   Content: #f7f7f8 page, #ffffff cards, #111111 text, #e2e2e2
+   borders. Status pills: solid saturated fills with white text
+   (green #0F9D58, blue #0066CC, amber #E8890C, red #D32F2F) —
+   bold, not pastel; same accessibility goal as the original
+   dark mode, inverted.
+   ============================================================ */
+const css = `
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;600&display=swap');
+
+.shell {
+  display: flex; min-height: 100vh; background: #f7f7f8; color: #111111;
+  font-family: 'Space Grotesk', system-ui, sans-serif; line-height: 1.55;
+}
+.shell * { box-sizing: border-box; }
+.shell :focus-visible { outline: 3px solid #0066CC; outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { .shell * { transition: none !important; } }
+
+h1, h2, h3 { font-weight: 700; letter-spacing: -0.01em; margin: 0 0 8px; }
+p { margin: 0 0 10px; }
+.page-h { font-size: clamp(1.4rem, 2.6vw, 1.9rem); color: #111111; }
+.page-lede { max-width: 780px; font-size: 1rem; margin-bottom: 20px; }
+.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+
+.eyebrow {
+  font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; font-weight: 600;
+  letter-spacing: 0.14em; color: #111111; margin: 0 0 10px;
+}
+
+/* ============ sidebar (dark chrome) ============ */
+.sidebar {
+  width: 250px; flex-shrink: 0; background: #0a0a0a; color: #ffffff;
+  display: flex; flex-direction: column; padding: 18px 12px; gap: 2px;
+  position: sticky; top: 0; height: 100vh; overflow-y: auto;
+}
+.side-brand { display: flex; gap: 10px; align-items: center; padding: 4px 10px 16px; }
+.brand-mark { width: 30px; height: 30px; flex-shrink: 0; }
+.side-name { display: block; font-weight: 700; font-size: 1.15rem; color: #ffffff; }
+.side-sub { display: block; font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; letter-spacing: 0.12em; color: #ffffff; }
+.side-item {
+  font-family: 'Space Grotesk', sans-serif; font-size: 0.92rem; font-weight: 500; text-align: left;
+  background: none; color: #ffffff; border: none; border-radius: 8px;
+  padding: 10px 12px; cursor: pointer; transition: background 130ms ease;
+}
+.side-item:hover { background: #1f1f1f; }
+.side-item.on { background: #00E5FF; color: #000000; font-weight: 700; }
+.side-cta { border: 1px solid #00E5FF; color: #00E5FF; margin: 6px 0; }
+.side-cta:hover { background: #00E5FF; color: #000000; }
+.side-cta.on { background: #00E5FF; color: #000000; }
+.side-divider { border-top: 1px solid #333333; margin: 14px 8px 10px; }
+.side-future-head { font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase; color: #9aa0a6; padding: 0 12px; margin: 0 0 4px; }
+.side-disabled-wrap { display: flex; flex-direction: column; }
+.side-disabled { color: #9aa0a6; cursor: help; font-size: 0.84rem; }
+.side-disabled:hover { background: #161616; }
+.side-lock { float: right; }
+.side-note {
+  font-size: 0.76rem; color: #c7cad1; background: #161616; border-left: 3px solid #9aa0a6;
+  border-radius: 0 6px 6px 0; padding: 8px 10px; margin: 2px 8px 6px;
+}
+.side-foot { margin-top: auto; font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem; line-height: 1.7; color: #9aa0a6; padding: 16px 12px 4px; }
+
+/* ============ top header (dark chrome) ============ */
+.main-col { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+.topbar {
+  background: #0a0a0a; color: #ffffff; display: flex; justify-content: space-between;
+  align-items: center; padding: 10px 24px; gap: 16px; position: sticky; top: 0; z-index: 5;
+}
+.crumb { font-size: 0.95rem; display: flex; gap: 8px; align-items: baseline; min-width: 0; }
+.crumb-app { font-weight: 700; }
+.crumb-sep { color: #9aa0a6; }
+.crumb-page { color: #ffffff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.topbar-right { display: flex; gap: 16px; align-items: center; }
+.bell { position: relative; background: none; border: 1px solid #333333; border-radius: 8px; padding: 6px 10px; cursor: pointer; font-size: 1rem; color: #ffffff; }
+.bell:hover { background: #1f1f1f; }
+.bell-count {
+  position: absolute; top: -7px; right: -7px; background: #D32F2F; color: #ffffff;
+  font-family: 'IBM Plex Mono', monospace; font-size: 0.66rem; font-weight: 700;
+  border-radius: 999px; padding: 1px 6px;
+}
+.user-badge { display: flex; gap: 10px; align-items: center; }
+.avatar {
+  width: 34px; height: 34px; border-radius: 50%; background: #00E5FF; color: #000000;
+  display: inline-flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem;
+}
+.user-meta { display: flex; flex-direction: column; }
+.user-name { font-size: 0.85rem; font-weight: 600; }
+.user-role select {
+  background: #0a0a0a; color: #00E5FF; border: 1px solid #333333; border-radius: 6px;
+  font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; padding: 2px 4px; cursor: pointer;
+}
+
+/* ============ content (light) ============ */
+.content { padding: 28px clamp(16px, 3vw, 44px) 56px; }
+.narrow { max-width: 720px; }
+.loading { font-family: 'IBM Plex Mono', monospace; font-size: 0.95rem; color: #0066CC; }
+.save-note { border: 2px solid #E8890C; border-radius: 8px; color: #7a4600; background: #ffffff; padding: 8px 12px; font-size: 0.85rem; max-width: 700px; margin: 0 0 20px; }
+.role-note { border: 1px dashed #5F6368; border-radius: 8px; color: #111111; background: #ffffff; padding: 10px 12px; font-size: 0.88rem; margin: 8px 0 0; }
+.role-note-inline { font-size: 0.78rem; color: #111111; }
+
+/* stepper */
+.stepper { display: flex; gap: 0; margin: 0 0 26px; flex-wrap: wrap; }
+.step { display: flex; align-items: center; gap: 8px; }
+.step-dot {
+  width: 30px; height: 30px; border-radius: 50%; display: inline-flex; align-items: center;
+  justify-content: center; font-weight: 700; font-size: 0.85rem; border: 2px solid #5F6368; color: #111111; background: #ffffff;
+}
+.step-label { font-size: 0.9rem; font-weight: 600; color: #111111; }
+.step-bar { width: 56px; height: 3px; background: #e2e2e2; margin: 0 12px; }
+.step-active .step-dot { background: #0066CC; border-color: #0066CC; color: #ffffff; }
+.step-active .step-label { color: #0066CC; }
+.step-done .step-dot { background: #0F9D58; border-color: #0F9D58; color: #ffffff; }
+.step-done .step-bar { background: #0F9D58; }
+
+/* stat cards + donut */
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 14px; margin-bottom: 22px; }
+.statcard {
+  background: #ffffff; border: 1px solid #e2e2e2; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.07);
+  padding: 16px 18px; display: flex; flex-direction: column; gap: 10px; transition: box-shadow 130ms ease;
+}
+.statcard:hover { box-shadow: 0 3px 10px rgba(0,0,0,0.12); }
+.statcard .stat-l { font-family: 'IBM Plex Mono', monospace; font-size: 0.64rem; letter-spacing: 0.08em; text-transform: uppercase; color: #111111; }
+.statcard .stat-n { font-size: 2.6rem; font-weight: 700; line-height: 1; color: #111111; }
+.statcard-chart { grid-column: span 2; }
+@media (max-width: 640px) { .statcard-chart { grid-column: span 1; } }
+.donut-wrap { display: flex; gap: 18px; align-items: center; flex-wrap: wrap; }
+.donut { width: 120px; height: 120px; flex-shrink: 0; }
+.donut-n { font-size: 26px; font-weight: 700; fill: #111111; font-family: 'Space Grotesk', sans-serif; }
+.donut-t { font-size: 8px; fill: #111111; font-family: 'IBM Plex Mono', monospace; letter-spacing: 1px; text-transform: uppercase; }
+.donut-legend { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; font-size: 0.82rem; color: #111111; }
+.donut-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; }
+
+/* pills — bold solid fills, white text */
+.pill {
+  display: inline-block; font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem;
+  font-weight: 700; letter-spacing: 0.05em; padding: 3px 10px; border-radius: 999px;
+  color: #ffffff; vertical-align: middle;
+}
+.pill-green { background: #0F9D58; }
+.pill-blue { background: #0066CC; }
+.pill-amber { background: #E8890C; }
+.pill-red { background: #D32F2F; }
+.pill-grey { background: #5F6368; }
+
+/* lamps — same bold fill treatment */
+.lamps { display: flex; gap: 6px; flex-wrap: wrap; }
+.lamp {
+  font-family: 'IBM Plex Mono', monospace; font-size: 0.66rem; font-weight: 700;
+  padding: 5px 12px; border: 2px solid transparent; border-radius: 8px; color: #ffffff;
+  display: inline-flex; flex-direction: column; align-items: center; white-space: nowrap;
+}
+.lamp em { font-style: normal; font-weight: 600; font-size: 0.58rem; letter-spacing: 0.04em; }
+.lamps-lg .lamp { font-size: 0.8rem; padding: 7px 14px; }
+.lamps-lg .lamp em { font-size: 0.64rem; }
+.lamp-l1-on { background: #0F9D58; }
+.lamp-l2-on { background: #0066CC; }
+.lamp-warn { background: #E8890C; }
+.lamp-off { background: #ffffff; border-color: #5F6368; border-style: dashed; color: #111111; }
+
+/* panels, exceptions */
+.panel { background: #ffffff; border: 1px solid #e2e2e2; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.07); padding: 20px 22px; margin-bottom: 20px; max-width: 900px; }
+.exceptions {
+  background: #ffffff; border: 2px solid #D32F2F; border-radius: 10px; padding: 16px 18px;
+  margin: 0 0 24px; max-width: 900px; display: flex; flex-direction: column; gap: 10px;
+}
+.exceptions .eyebrow { color: #D32F2F; }
+.exception-row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; border-left: 4px solid #D32F2F; padding: 6px 12px; }
+.exception-name { font-size: 0.92rem; flex: 1; }
+
+/* use cases page */
+.uc-toolbar { margin-bottom: 12px; }
+.uc-filter { font-size: 0.88rem; font-weight: 600; display: inline-flex; gap: 8px; align-items: center; }
+.uc-filter select { border: 1px solid #5F6368; border-radius: 6px; background: #ffffff; color: #111111; font-family: 'Space Grotesk', sans-serif; font-size: 0.88rem; padding: 6px 8px; }
+.uc-table-wrap { overflow-x: auto; max-width: none; }
+.mono-id { font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem; letter-spacing: 0.08em; }
+.uc-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+
+/* governance documents */
+.gov-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; max-width: 1100px; }
+.gov-card { background: #ffffff; border: 1px solid #e2e2e2; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.07); padding: 18px 20px; display: flex; flex-direction: column; gap: 10px; transition: box-shadow 130ms ease; }
+.gov-card:hover { box-shadow: 0 3px 10px rgba(0,0,0,0.12); }
+.gov-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; flex-wrap: wrap; }
+.gov-top h3 { font-size: 1.05rem; margin: 0; }
+.gov-meta { margin: 0; font-size: 0.85rem; }
+.gov-meta > div { display: grid; grid-template-columns: 130px 1fr; gap: 8px; padding: 4px 0; border-bottom: 1px solid #e2e2e2; }
+.gov-meta dt { font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; }
+.gov-meta dd { margin: 0; }
+.gov-note { font-size: 0.85rem; margin: 0; }
+
+/* about page panels */
+.about-list { margin: 8px 0 0; padding-left: 20px; }
+.about-list li { margin-bottom: 8px; font-size: 0.92rem; }
+.about-list-intro { font-weight: 600; }
+.about-gap { border-left: 4px solid #D32F2F; padding: 4px 12px; margin: 12px 0 0; font-size: 0.88rem; }
+.about-caveat { border-left: 4px solid #7B1FA2; color: #4A148C; padding: 4px 12px; margin: 12px 0 0; font-size: 0.88rem; }
+.gap-panel { background: #ffffff; border: 2px solid #D32F2F; border-radius: 10px; padding: 20px 22px; max-width: 900px; margin-bottom: 20px; }
+.gap-panel p { max-width: 820px; }
+.future-panel { background: #ffffff; border: 2px dotted #7B1FA2; border-radius: 10px; color: #4A148C; padding: 18px 22px; max-width: 900px; margin-bottom: 24px; }
+.future-panel p { color: #4A148C; margin: 10px 0 0; }
+.future-panel strong { color: #4A148C; }
+.ghost-tag {
+  font-family: 'IBM Plex Mono', monospace; font-size: 0.64rem; letter-spacing: 0.14em;
+  border: 1px solid #7B1FA2; border-radius: 4px; padding: 2px 6px; color: #4A148C;
+}
+.ghost { border: 2px dotted #7B1FA2; border-radius: 10px; color: #4A148C; padding: 12px 14px; font-size: 0.85rem; background: #ffffff; max-width: 420px; }
+.ghost strong { display: block; margin: 6px 0 4px; color: #4A148C; }
+.ghost p { margin: 0; color: #4A148C; }
+.foot { font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; line-height: 1.7; border-top: 2px solid #111111; padding-top: 16px; max-width: 900px; color: #111111; }
+
+/* before you start */
+.pre-steps { display: flex; flex-direction: column; gap: 18px; margin: 20px 0 24px; }
+.pre-step { border-radius: 10px; display: flex; gap: 14px; align-items: flex-start; border: 1px solid #e2e2e2; box-shadow: 0 1px 3px rgba(0,0,0,0.07); padding: 16px 18px; background: #ffffff; }
+.pre-step strong { display: block; margin-bottom: 4px; }
+.pre-step p { margin: 0; font-size: 0.92rem; }
+.p-n { display: inline-block; border: 2px solid #0066CC; border-radius: 6px; color: #0066CC; font-family: 'IBM Plex Mono', monospace; font-size: 0.8rem; font-weight: 700; padding: 2px 9px; }
+
+/* forms */
+.field { margin-bottom: 18px; }
+.field label { display: block; font-weight: 600; margin-bottom: 6px; }
+.field input, .field textarea, .field select {
+  border-radius: 6px; width: 100%; background: #ffffff; color: #111111; border: 1px solid #5F6368;
+  padding: 10px 12px; font-family: 'Space Grotesk', sans-serif; font-size: 0.98rem;
+}
+.field input::placeholder, .field textarea::placeholder { color: #5F6368; }
+.field .q-help { margin: 6px 0 0; }
+.q-block { border: 1px solid #e2e2e2; border-radius: 10px; background: #ffffff; box-shadow: 0 1px 3px rgba(0,0,0,0.07); padding: 16px 18px; margin-bottom: 20px; }
+.q-block legend { font-weight: 700; padding: 0 8px; }
+.q-num { font-family: 'IBM Plex Mono', monospace; color: #0066CC; margin-right: 6px; }
+.q-help { font-size: 0.88rem; margin: 6px 0 12px; }
+.yn { display: flex; gap: 10px; }
+.yn-b {
+  font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 0.95rem; border-radius: 6px;
+  background: #ffffff; color: #111111; border: 2px solid #111111; padding: 8px 20px; cursor: pointer;
+  transition: background 130ms ease, color 130ms ease;
+}
+.yn-b:hover { background: #111111; color: #ffffff; }
+.yn-b.yn-on { background: #0066CC; color: #ffffff; border-color: #0066CC; }
+.radio-row { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 10px; cursor: pointer; }
+.radio-row input { accent-color: #0066CC; width: 18px; height: 18px; margin-top: 3px; }
+.l2-block { border: 2px solid #0066CC; }
+.l2-tag { font-family: 'IBM Plex Mono', monospace; font-size: 0.66rem; letter-spacing: 0.1em; color: #ffffff; background: #0066CC; border-radius: 4px; padding: 2px 6px; margin-left: 8px; vertical-align: middle; }
+.l2-q { margin-bottom: 16px; }
+.l2-q p { margin-bottom: 8px; font-weight: 500; }
+.high-risk-block { border: 2px solid #D32F2F; border-radius: 8px; padding: 12px 14px; margin-top: 6px; }
+.hr-help { color: #B71C1C; margin-top: 0; }
+.trace-block { border: 2px solid #0066CC; }
+.result { border: 1px solid #e2e2e2; border-radius: 10px; background: #ffffff; box-shadow: 0 1px 3px rgba(0,0,0,0.07); padding: 18px 20px; margin-top: 20px; }
+.result-trig { border: 2px solid #0066CC; }
+.result strong { display: block; font-size: 1.1rem; margin-bottom: 6px; }
+.result .btn { margin-top: 8px; }
+
+/* buttons */
+.btn {
+  border-radius: 6px; font-family: 'Space Grotesk', sans-serif; font-size: 0.95rem; font-weight: 600;
+  background: #ffffff; color: #111111; border: 2px solid #111111; padding: 10px 16px; cursor: pointer;
+  transition: background 130ms ease, color 130ms ease, transform 130ms ease;
+}
+.btn:hover { background: #111111; color: #ffffff; }
+.btn:active { transform: translateY(1px); }
+.btn:disabled { border-style: dashed; border-color: #5F6368; color: #5F6368; background: #ffffff; cursor: not-allowed; }
+.btn-primary { background: #0066CC; border-color: #0066CC; color: #ffffff; }
+.btn-primary:hover { background: #004C99; border-color: #004C99; color: #ffffff; }
+.btn-big { font-size: 1.05rem; padding: 14px 24px; margin-top: 8px; }
+.btn-sm { font-size: 0.82rem; padding: 6px 12px; }
+.btn-dl { font-size: 0.85rem; align-self: flex-start; border-color: #0066CC; color: #0066CC; background: #ffffff; }
+.btn-dl:hover { background: #0066CC; color: #ffffff; }
+.link-back { display: block; margin-top: 24px; background: none; border: none; color: #111111; text-decoration: underline; cursor: pointer; font-size: 0.92rem; font-family: inherit; padding: 0; }
+
+/* outputs */
+.out-head { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+.outputs { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 18px; margin-bottom: 22px; align-items: start; }
+.out-card { background: #ffffff; border: 1px solid #e2e2e2; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.07); padding: 18px; display: flex; flex-direction: column; gap: 14px; }
+.reg { margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 0.8rem; }
+.reg > div { display: grid; grid-template-columns: 150px 1fr; gap: 10px; padding: 6px 0; border-bottom: 1px solid #e2e2e2; }
+.reg dt { font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; font-size: 0.66rem; }
+.reg dd { margin: 0; }
+.reg-subhead {
+  font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; font-weight: 600;
+  letter-spacing: 0.14em; text-transform: uppercase; color: #0066CC;
+  border-bottom: 2px solid #0066CC; padding-bottom: 4px; margin: 6px 0 0;
+}
+.tabs { display: flex; gap: 2px; border-bottom: 1px solid #e2e2e2; flex-wrap: wrap; }
+.tab {
+  font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; font-weight: 600;
+  letter-spacing: 0.06em; background: none; color: #111111; border: none;
+  border-bottom: 3px solid transparent; padding: 9px 13px; cursor: pointer;
+  transition: border-color 130ms ease, color 130ms ease;
+}
+.tab:hover { border-bottom-color: #111111; }
+.tab.on { border-bottom-color: #0066CC; color: #0066CC; }
+
+/* evidence + trace */
+.evidence { border-radius: 8px; border: 1px solid #e2e2e2; background: #f7f7f8; padding: 12px 14px; display: flex; flex-direction: column; gap: 10px; }
+.ev-row { border-left: 4px solid #5F6368; padding: 2px 12px; }
+.ev-row p { margin: 2px 0 0; font-size: 0.88rem; font-family: 'Space Grotesk', sans-serif; }
+.ev-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.64rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: #111111; }
+.ev-result { border-left-color: #0F9D58; }
+.ev-result .ev-label { color: #0F9D58; }
+.trace { border-radius: 8px; background: #f7f7f8; border: 1px solid #e2e2e2; padding: 14px; display: flex; flex-direction: column; gap: 4px; }
+.trace-title { font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; margin: 0 0 8px; color: #111111; }
+.trace-stamp { float: right; font-weight: 400; letter-spacing: 0.06em; color: #111111; text-transform: none; }
+.trace-step { border-left: 4px solid #0066CC; padding: 4px 12px; }
+.trace-step p { margin: 2px 0 0; font-size: 0.88rem; font-family: 'Space Grotesk', sans-serif; }
+.trace-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.66rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: #0066CC; }
+.trace-arrow { color: #0066CC; font-weight: 700; padding-left: 14px; line-height: 1; }
+.trace-result { border-left-color: #0F9D58; }
+.trace-result .trace-label { color: #0F9D58; }
+.trace-citizen { background: #f7f7f8; }
+.trace-compact { border: none; padding: 4px 14px 12px; gap: 8px; background: none; }
+.notice-example-intro { font-size: 0.88rem; }
+
+/* citizen notice preview + citizen view */
+.citizen .notice { border: 1px solid #e2e2e2; border-radius: 8px; padding: 16px; background: #ffffff; }
+.notice h3 { font-size: 1.15rem; }
+.notice h4 { font-size: 0.95rem; margin: 14px 0 4px; color: #0066CC; }
+.notice p { font-size: 0.94rem; }
+.citizen-wrap { max-width: 760px; display: flex; flex-direction: column; gap: 18px; align-items: flex-start; }
+.citizen-frame { font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; letter-spacing: 0.1em; border: 1px solid #7B1FA2; border-radius: 4px; color: #4A148C; padding: 4px 10px; margin: 0; background: #ffffff; }
+.citizen-screen { border: 1px solid #e2e2e2; border-radius: 12px; overflow: hidden; width: 100%; background: #ffffff; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.cz-masthead { display: flex; gap: 12px; align-items: center; background: #0a0a0a; color: #ffffff; padding: 16px 22px; }
+.cz-crest { font-size: 1.5rem; color: #00E5FF; }
+.cz-agency { display: block; font-weight: 700; font-size: 1.05rem; }
+.cz-portal { display: block; font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; letter-spacing: 0.1em; }
+.cz-body { padding: 22px; }
+.cz-body h2 { font-size: 1.35rem; margin-top: 8px; }
+.cz-body h3 { font-size: 1rem; color: #0066CC; margin: 18px 0 4px; }
+.cz-body p { font-size: 0.95rem; }
+.cz-ref { font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; letter-spacing: 0.08em; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.cz-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 22px; }
+.cz-action-note { border: 2px dotted #7B1FA2; border-radius: 8px; color: #4A148C; padding: 10px 14px; margin-top: 14px; font-size: 0.88rem; background: #ffffff; }
+
+/* banners + sign-offs */
+.banner { border-radius: 10px; background: #ffffff; border: 2px solid; padding: 14px 18px; margin: 0 0 16px; max-width: 900px; display: flex; flex-wrap: wrap; align-items: center; gap: 14px; font-size: 0.95rem; box-shadow: 0 1px 3px rgba(0,0,0,0.07); }
+.banner strong { font-family: 'IBM Plex Mono', monospace; letter-spacing: 0.04em; }
+.banner-draft { border-color: #E8890C; }
+.banner-draft strong { color: #9A5800; }
+.banner-final { border-color: #0F9D58; }
+.banner-final strong { color: #0F9D58; }
+.banner-text { flex: 1 1 100%; }
+.selfcert { display: flex; gap: 10px; align-items: flex-start; cursor: pointer; font-size: 0.95rem; color: #9A5800; font-weight: 600; }
+.selfcert input { accent-color: #E8890C; width: 20px; height: 20px; margin-top: 2px; flex-shrink: 0; }
+.signoff { border: 2px solid #E8890C; border-radius: 8px; background: #ffffff; padding: 12px 14px; width: 100%; }
+.signoff-title { font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.06em; margin: 0 0 10px; color: #111111; }
+.signoff-scope { display: block; font-weight: 400; font-family: 'Space Grotesk', sans-serif; font-size: 0.85rem; letter-spacing: 0; margin-top: 2px; }
+.signoff-done { font-family: 'IBM Plex Mono', monospace; font-size: 0.85rem; color: #0F9D58; margin: 0; }
+.signoff-conflict { border: 2px solid #D32F2F; border-radius: 8px; color: #B71C1C; padding: 10px 14px; margin: 10px 0 0; font-size: 0.88rem; width: 100%; background: #ffffff; }
+.approve-fields { display: flex; flex-wrap: wrap; gap: 14px; align-items: flex-end; width: 100%; }
+.approve-field { display: flex; flex-direction: column; gap: 4px; flex: 1 1 220px; }
+.approve-field label { font-family: 'IBM Plex Mono', monospace; font-size: 0.66rem; letter-spacing: 0.1em; text-transform: uppercase; color: #9A5800; }
+.approve-field input { border-radius: 6px; background: #ffffff; color: #111111; border: 2px solid #E8890C; padding: 8px 10px; font-family: 'Space Grotesk', sans-serif; font-size: 0.92rem; }
+.btn-approve { border-color: #0F9D58; color: #0F9D58; background: #ffffff; }
+.btn-approve:hover { background: #0F9D58; color: #ffffff; }
+.btn-approve:disabled { border-style: dashed; border-color: #E8890C; color: #9A5800; background: #ffffff; cursor: not-allowed; }
+
+/* flags */
+.flag-amber { border: 2px solid #E8890C; border-radius: 8px; color: #7A4600; background: #ffffff; padding: 8px 12px; font-size: 0.88rem; }
+.big-flag { max-width: 860px; margin-bottom: 20px; }
+
+/* exec table */
+.exec { width: 100%; border-collapse: collapse; font-size: 0.85rem; color: #111111; }
+.exec th { font-family: 'IBM Plex Mono', monospace; font-size: 0.66rem; letter-spacing: 0.08em; text-transform: uppercase; text-align: left; border-bottom: 2px solid #111111; padding: 8px; background: #f7f7f8; }
+.exec td { border-bottom: 1px solid #e2e2e2; padding: 10px 8px; vertical-align: top; }
+.exec tbody tr { transition: background 130ms ease; }
+.exec tbody tr:hover { background: #f0f4ff; }
+.exec-evidence { border: 1px solid #e2e2e2; border-radius: 8px; background: #f7f7f8; }
+.exec-evidence summary { cursor: pointer; padding: 10px 14px; font-family: 'IBM Plex Mono', monospace; font-size: 0.75rem; letter-spacing: 0.06em; }
+.exec-evidence summary:hover { background: #e9edf5; }
+.exec-evidence .ev-row { margin: 8px 14px; }
+
+/* activity log */
+.activity-card { max-width: 900px; }
+.activity { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.activity li { display: flex; gap: 14px; padding: 9px 4px; border-bottom: 1px solid #e2e2e2; align-items: baseline; }
+.activity li:last-child { border-bottom: none; }
+.activity-ts { font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; color: #111111; white-space: nowrap; }
+.activity-text { font-size: 0.9rem; }
+.activity-empty { font-size: 0.9rem; }
+.out-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+
+@media (max-width: 760px) {
+  .shell { flex-direction: column; }
+  .sidebar { width: 100%; height: auto; position: static; flex-direction: row; flex-wrap: wrap; align-items: center; }
+  .side-foot, .side-future-head, .side-note { display: none; }
+  .side-divider { display: none; }
+}
+`;
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(React.createElement(App));
 </script>
