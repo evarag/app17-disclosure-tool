@@ -1,0 +1,2102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#000000">
+<title>APP 1.7 Automated Decision-Making Disclosure Tool — Prototype</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;600&display=swap');
+
+.root {
+  min-height: 100vh;
+  background: #000000;
+  color: #ffffff;
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+  padding: 32px clamp(16px, 4vw, 56px) 64px;
+  line-height: 1.55;
+}
+.root * { box-sizing: border-box; }
+.root :focus-visible { outline: 3px solid #00E5FF; outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { .root * { transition: none !important; } }
+html { background: #000000; }
+body { background: #000000; margin: 0; }
+
+h1, h2, h3 { font-weight: 700; letter-spacing: -0.01em; margin: 0 0 8px; }
+h1 { font-size: clamp(1.6rem, 3.4vw, 2.4rem); }
+h2 { font-size: clamp(1.3rem, 2.6vw, 1.8rem); }
+p { margin: 0 0 10px; }
+
+.eyebrow {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.72rem; font-weight: 600; letter-spacing: 0.14em;
+  color: #ffffff; margin: 0 0 10px;
+}
+
+.hdr { display: flex; flex-wrap: wrap; gap: 20px; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid #ffffff; padding-bottom: 24px; margin-bottom: 20px; }
+.hdr-sub { max-width: 640px; font-size: 1.02rem; }
+.proto-badge {
+  font-family: 'IBM Plex Mono', monospace; font-size: 0.75rem; line-height: 1.6;
+  border: 2px solid #FFC400; color: #FFC400; padding: 10px 14px; max-width: 320px;
+}
+
+.nav { display: flex; gap: 12px; margin: 0 0 28px; flex-wrap: wrap; }
+.nav-b {
+  font-family: 'Space Grotesk', sans-serif; font-size: 0.95rem; font-weight: 500;
+  background: #0a0a0a; color: #ffffff; border: 2px solid #ffffff;
+  padding: 10px 18px; cursor: pointer;
+}
+.nav-b.on { background: #ffffff; color: #000000; font-weight: 700; }
+.nav-cta { border-color: #00E5FF; color: #00E5FF; }
+.nav-cta:hover { background: #00E5FF; color: #000000; }
+
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 16px; }
+.stat { background: #0a0a0a; border: 2px solid #ffffff; padding: 16px; }
+.stat-n { display: block; font-size: 2.2rem; font-weight: 700; line-height: 1; }
+.stat-l { font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; display: block; margin-top: 8px; color: #ffffff; }
+
+.legend { border-left: 4px solid #00E5FF; padding: 8px 14px; margin: 0 0 20px; max-width: 900px; font-size: 0.95rem; background: #0a0a0a; }
+
+.process {
+  display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap;
+  font-family: 'IBM Plex Mono', monospace; margin: 0 0 16px;
+}
+.p-step { font-size: 0.95rem; font-weight: 600; color: #ffffff; }
+.p-n {
+  display: inline-block; border: 2px solid #00E5FF; color: #00E5FF;
+  font-size: 0.75rem; padding: 1px 7px; margin-right: 6px;
+}
+.p-arrow { color: #00E5FF; font-weight: 700; }
+.p-detail { font-size: 0.72rem; letter-spacing: 0.08em; color: #ffffff; }
+
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; margin-bottom: 32px; }
+.card { background: #0a0a0a; border: 2px solid #ffffff; padding: 18px; display: flex; flex-direction: column; gap: 8px; }
+.card h3 { font-size: 1.1rem; }
+.card-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+.mono-id { font-family: 'IBM Plex Mono', monospace; font-size: 0.75rem; color: #ffffff; letter-spacing: 0.1em; }
+.card-owner { font-size: 0.88rem; color: #ffffff; }
+.card-actions { margin-top: auto; }
+
+.lamps { display: flex; gap: 6px; flex-wrap: wrap; }
+.lamp {
+  font-family: 'IBM Plex Mono', monospace; font-size: 0.66rem; font-weight: 600;
+  padding: 4px 8px; border: 2px solid; display: inline-flex; flex-direction: column; align-items: center; white-space: nowrap;
+}
+.lamp em { font-style: normal; font-weight: 400; font-size: 0.58rem; letter-spacing: 0.04em; }
+.lamps-lg .lamp { font-size: 0.8rem; padding: 6px 12px; }
+.lamps-lg .lamp em { font-size: 0.64rem; }
+.lamp-l1-on { border-color: #00E5FF; color: #00E5FF; }
+.lamp-l2-on { border-color: #00FF85; color: #00FF85; }
+.lamp-warn { border-color: #FFC400; color: #FFC400; }
+.lamp-off { border-color: #ffffff; color: #ffffff; border-style: dashed; }
+
+.flag-amber { border: 2px solid #FFC400; color: #FFC400; padding: 8px 12px; font-size: 0.88rem; }
+.flag-red { border: 2px solid #FF4D6D; color: #FF4D6D; padding: 8px 12px; font-size: 0.88rem; }
+.flag-plain { border: 2px dashed #ffffff; color: #ffffff; padding: 8px 12px; font-size: 0.88rem; }
+.big-flag { max-width: 860px; margin-bottom: 20px; }
+
+.btn {
+  font-family: 'Space Grotesk', sans-serif; font-size: 0.95rem; font-weight: 600;
+  background: #000000; color: #ffffff; border: 2px solid #ffffff; padding: 10px 16px; cursor: pointer;
+}
+.btn:hover { background: #ffffff; color: #000000; }
+.btn-bright { border-color: #00E5FF; color: #00E5FF; }
+.btn-bright:hover { background: #00E5FF; color: #000000; }
+.btn-big { font-size: 1.05rem; padding: 14px 24px; margin-top: 8px; }
+.btn:disabled { border-color: #ffffff; color: #ffffff; border-style: dashed; cursor: not-allowed; background: #000; }
+.link-back { display: block; margin-top: 24px; background: none; border: none; color: #ffffff; text-decoration: underline; cursor: pointer; font-size: 0.92rem; font-family: inherit; padding: 0; }
+
+.ghost {
+  border: 2px dotted #C792FF; color: #C792FF; padding: 12px 14px; font-size: 0.85rem;
+  background: #000000; max-width: 420px;
+}
+.ghost strong { display: block; margin: 6px 0 4px; color: #C792FF; }
+.ghost p { margin: 0; color: #C792FF; }
+.ghost-tag {
+  font-family: 'IBM Plex Mono', monospace; font-size: 0.64rem; letter-spacing: 0.14em;
+  border: 1px solid #C792FF; padding: 2px 6px; color: #C792FF;
+}
+.ghost-row { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 36px; }
+
+.gap-panel { border: 2px solid #FF4D6D; padding: 22px 24px; max-width: 900px; margin-bottom: 24px; background: #0a0a0a; }
+.gap-panel p { max-width: 820px; }
+.future-panel { border: 2px dotted #C792FF; color: #C792FF; padding: 18px 22px; max-width: 900px; margin-bottom: 32px; }
+.future-panel p { color: #C792FF; margin: 10px 0 0; }
+.future-panel strong { color: #C792FF; }
+
+.foot { font-family: 'IBM Plex Mono', monospace; font-size: 0.74rem; line-height: 1.7; border-top: 2px solid #ffffff; padding-top: 16px; max-width: 900px; color: #ffffff; }
+
+.narrow { max-width: 720px; }
+.lede { font-size: 1.02rem; margin-bottom: 24px; }
+.field { margin-bottom: 18px; }
+.field label { display: block; font-weight: 600; margin-bottom: 6px; }
+.field input, .field textarea, .field select {
+  width: 100%; background: #0a0a0a; color: #ffffff; border: 2px solid #ffffff;
+  padding: 10px 12px; font-family: 'Space Grotesk', sans-serif; font-size: 0.98rem;
+}
+.field select option { background: #0a0a0a; color: #ffffff; }
+.field .q-help { margin: 6px 0 0; }
+.field input::placeholder, .field textarea::placeholder { color: #ffffff; opacity: 0.75; }
+
+.rev-tag { font-family: 'IBM Plex Mono', monospace; font-size: 0.66rem; letter-spacing: 0.1em; border: 1px solid; padding: 2px 8px; align-self: flex-start; }
+.rev-draft { border-color: #FFC400; color: #FFC400; }
+.rev-final { border-color: #00FF85; color: #00FF85; }
+.banner { border: 2px solid; padding: 14px 18px; margin: 0 0 16px; max-width: 860px;
+  display: flex; flex-wrap: wrap; align-items: center; gap: 14px; font-size: 0.95rem; }
+.banner strong { font-family: 'IBM Plex Mono', monospace; letter-spacing: 0.04em; }
+.banner-draft { border-color: #FFC400; color: #FFC400; }
+.banner-final { border-color: #00FF85; color: #00FF85; }
+.btn-approve { border-color: #00FF85; color: #00FF85; margin-left: auto; }
+.btn-approve:hover { background: #00FF85; color: #000000; }
+
+.btn-dl { font-size: 0.85rem; align-self: flex-start; border-color: #00E5FF; color: #00E5FF; }
+.btn-dl:hover { background: #00E5FF; color: #000000; }
+.out-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+
+.loading { font-family: 'IBM Plex Mono', monospace; font-size: 0.95rem; color: #00E5FF; }
+.save-note { border: 2px solid #FFC400; color: #FFC400; padding: 8px 12px; font-size: 0.85rem; max-width: 700px; margin: 0 0 20px; }
+
+.q-block { border: 2px solid #ffffff; padding: 16px 18px; margin-bottom: 18px; }
+.q-block legend { font-weight: 700; padding: 0 8px; }
+.q-num { font-family: 'IBM Plex Mono', monospace; color: #00E5FF; margin-right: 6px; }
+.q-help { font-size: 0.88rem; margin: 6px 0 12px; }
+.yn { display: flex; gap: 10px; }
+.yn-b {
+  font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 0.95rem;
+  background: #000000; color: #ffffff; border: 2px solid #ffffff; padding: 8px 20px; cursor: pointer;
+}
+.yn-b.yn-on { background: #00E5FF; color: #000000; border-color: #00E5FF; }
+.radio-row { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 10px; cursor: pointer; }
+.radio-row input { accent-color: #00E5FF; width: 18px; height: 18px; margin-top: 3px; }
+
+.l2-block { border-color: #00FF85; }
+.l2-tag { font-family: 'IBM Plex Mono', monospace; font-size: 0.66rem; letter-spacing: 0.1em; color: #00FF85; border: 1px solid #00FF85; padding: 2px 6px; margin-left: 8px; vertical-align: middle; }
+.l2-q { margin-bottom: 16px; }
+.l2-q p { margin-bottom: 8px; font-weight: 500; }
+
+.result { border: 2px solid #ffffff; padding: 18px 20px; margin-top: 20px; }
+.result-trig { border-color: #00E5FF; }
+.result strong { display: block; font-size: 1.1rem; margin-bottom: 6px; }
+.result .btn { margin-top: 8px; }
+
+.out-head { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+.outputs { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 18px; margin-bottom: 28px; align-items: start; }
+.out-card { background: #0a0a0a; border: 2px solid #ffffff; padding: 18px; display: flex; flex-direction: column; gap: 14px; }
+
+.reg { margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 0.8rem; }
+.reg-subhead {
+  font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; font-weight: 600;
+  letter-spacing: 0.14em; text-transform: uppercase; color: #00E5FF;
+  border-bottom: 2px solid #00E5FF; padding-bottom: 4px; margin: 6px 0 0;
+}
+
+.trace { border: 2px solid #ffffff; padding: 14px; display: flex; flex-direction: column; gap: 4px; }
+.trace-title { font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; margin: 0 0 8px; color: #ffffff; }
+.trace-step { border-left: 4px solid #00E5FF; padding: 4px 12px; }
+.trace-step p { margin: 2px 0 0; font-size: 0.88rem; font-family: 'Space Grotesk', sans-serif; }
+.trace-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.66rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: #00E5FF; }
+.trace-arrow { color: #00E5FF; font-weight: 700; padding-left: 14px; line-height: 1; }
+.trace-result { border-left-color: #00FF85; }
+.trace-result .trace-label { color: #00FF85; }
+.trace-citizen { background: #000000; }
+.notice-example-intro { font-size: 0.88rem; }
+
+.high-risk-block { border: 2px solid #FF4D6D; padding: 12px 14px; margin-top: 6px; }
+.high-risk-block .q-help { color: #FF4D6D; margin-top: 0; }
+.trace-block { border-color: #00E5FF; }
+
+.hdr-tag {
+  display: inline-block; font-family: 'IBM Plex Mono', monospace; font-size: 0.66rem;
+  font-weight: 600; letter-spacing: 0.14em; color: #00E5FF; border: 1px solid #00E5FF;
+  padding: 3px 8px; margin-top: 12px;
+}
+.about { border: 2px solid #ffffff; margin: 0 0 24px; max-width: 900px; background: #0a0a0a; }
+.about summary {
+  cursor: pointer; padding: 12px 16px; font-weight: 600; font-size: 0.95rem;
+  font-family: 'IBM Plex Mono', monospace; letter-spacing: 0.04em;
+}
+.about summary:hover { background: #ffffff; color: #000000; }
+.about-body { padding: 4px 18px 16px; }
+.about-list { margin: 8px 0 0; padding-left: 20px; }
+.about-list li { margin-bottom: 8px; font-size: 0.92rem; }
+.about-list-intro { font-weight: 600; }
+
+.pre-steps { display: flex; flex-direction: column; gap: 18px; margin: 20px 0 24px; }
+.pre-step { display: flex; gap: 14px; align-items: flex-start; border: 2px solid #ffffff; padding: 16px 18px; background: #0a0a0a; }
+.pre-step strong { display: block; margin-bottom: 4px; }
+.pre-step p { margin: 0; font-size: 0.92rem; }
+
+.evidence { border: 2px solid #ffffff; padding: 12px 14px; display: flex; flex-direction: column; gap: 10px; background: #000000; }
+.ev-row { border-left: 4px solid #ffffff; padding: 2px 12px; }
+.ev-row p { margin: 2px 0 0; font-size: 0.88rem; font-family: 'Space Grotesk', sans-serif; }
+.ev-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.64rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: #ffffff; }
+.ev-result { border-left-color: #00FF85; }
+.ev-result .ev-label { color: #00FF85; }
+.trace-stamp { float: right; font-weight: 400; letter-spacing: 0.06em; color: #ffffff; text-transform: none; }
+
+.banner-text { flex: 1 1 100%; }
+.approve-fields { display: flex; flex-wrap: wrap; gap: 14px; align-items: flex-end; width: 100%; }
+.approve-field { display: flex; flex-direction: column; gap: 4px; flex: 1 1 220px; }
+.approve-field label { font-family: 'IBM Plex Mono', monospace; font-size: 0.66rem; letter-spacing: 0.1em; text-transform: uppercase; color: #FFC400; }
+.approve-field input { background: #000000; color: #ffffff; border: 2px solid #FFC400; padding: 8px 10px; font-family: 'Space Grotesk', sans-serif; font-size: 0.92rem; }
+.approve-field input::placeholder { color: #FFC400; opacity: 0.8; }
+.btn-approve:disabled { border-style: dashed; opacity: 1; color: #FFC400; border-color: #FFC400; cursor: not-allowed; background: #000; }
+
+.selfcert { display: flex; gap: 10px; align-items: flex-start; cursor: pointer; font-size: 0.95rem; color: #FFC400; font-weight: 600; }
+.selfcert input { accent-color: #FFC400; width: 20px; height: 20px; margin-top: 2px; flex-shrink: 0; }
+.signoff { border: 2px solid #FFC400; padding: 12px 14px; width: 100%; }
+.signoff-title { font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.06em; margin: 0 0 10px; }
+.signoff-scope { display: block; font-weight: 400; font-family: 'Space Grotesk', sans-serif; font-size: 0.85rem; letter-spacing: 0; margin-top: 2px; }
+.signoff-done { font-family: 'IBM Plex Mono', monospace; font-size: 0.85rem; color: #00FF85; margin: 0; }
+
+.exceptions { border: 2px solid #FF4D6D; padding: 16px 18px; margin: 0 0 28px; max-width: 900px; background: #0a0a0a; display: flex; flex-direction: column; gap: 10px; }
+.exception-row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; border-left: 4px solid #FF4D6D; padding: 6px 12px; }
+.exception-flag { font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.08em; color: #FF4D6D; border: 1px solid #FF4D6D; padding: 3px 8px; }
+.exception-name { font-size: 0.92rem; flex: 1; }
+.btn-sm { font-size: 0.82rem; padding: 6px 12px; }
+.about-gap { border-left: 4px solid #FF4D6D; padding: 4px 12px; margin: 12px 0 0; font-size: 0.88rem; }
+
+.exec-evidence { border: 2px solid #ffffff; background: #000000; }
+.exec-evidence summary { cursor: pointer; padding: 10px 14px; font-family: 'IBM Plex Mono', monospace; font-size: 0.75rem; letter-spacing: 0.06em; }
+.exec-evidence summary:hover { background: #ffffff; color: #000000; }
+.exec-evidence .ev-row { margin: 8px 14px; }
+.trace-compact { border: none; padding: 4px 14px 12px; gap: 8px; }
+
+.citizen-wrap { max-width: 760px; display: flex; flex-direction: column; gap: 18px; align-items: flex-start; }
+.citizen-frame { font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; letter-spacing: 0.1em; border: 1px solid #C792FF; color: #C792FF; padding: 4px 10px; margin: 0; }
+.citizen-screen { border: 2px solid #ffffff; width: 100%; background: #0a0a0a; }
+.cz-masthead { display: flex; gap: 12px; align-items: center; border-bottom: 2px solid #ffffff; padding: 16px 22px; }
+.cz-crest { font-size: 1.5rem; color: #00E5FF; }
+.cz-agency { display: block; font-weight: 700; font-size: 1.05rem; }
+.cz-portal { display: block; font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; letter-spacing: 0.1em; color: #ffffff; }
+.cz-body { padding: 22px; }
+.cz-body h2 { font-size: 1.35rem; margin-top: 8px; }
+.cz-body h3 { font-size: 1rem; color: #00E5FF; margin: 18px 0 4px; }
+.cz-body p { font-size: 0.95rem; }
+.cz-ref { font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; letter-spacing: 0.08em; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.cz-draft-tag { border: 1px solid #FFC400; color: #FFC400; padding: 2px 8px; font-size: 0.64rem; letter-spacing: 0.1em; }
+.cz-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 22px; }
+.cz-action-note { border: 2px dotted #C792FF; color: #C792FF; padding: 10px 14px; margin-top: 14px; font-size: 0.88rem; }
+.reg > div { display: grid; grid-template-columns: 130px 1fr; gap: 10px; padding: 6px 0; border-bottom: 1px solid #ffffff; }
+.reg dt { font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; font-size: 0.68rem; }
+.reg dd { margin: 0; }
+
+.citizen .notice { border: 2px solid #ffffff; padding: 16px; background: #000000; }
+.notice h3 { font-size: 1.15rem; }
+.notice h4 { font-size: 0.95rem; margin: 14px 0 4px; color: #00E5FF; }
+.notice p { font-size: 0.94rem; }
+
+.exec { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+.exec th { font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; letter-spacing: 0.08em; text-transform: uppercase; text-align: left; border-bottom: 2px solid #ffffff; padding: 6px 8px; }
+.exec td { border-bottom: 1px solid #ffffff; padding: 8px; vertical-align: top; }
+.exec .ok { color: #00FF85; font-weight: 700; }
+.exec .warn { color: #FFC400; font-weight: 700; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script type="text/babel" data-presets="react">
+const { useState, useEffect } = React;
+
+/* ============================================================
+   APP 1.7 Automated Decision-Making Disclosure Tool — PROTOTYPE
+   Standalone demonstration piece. Not connected to any real
+   register, CMDB, or DTA system. Hypothetical example data only.
+   ============================================================ */
+
+const OVERSIGHT = {
+  full_auto: "Fully automated — no human reviews individual decisions",
+  sample: "A person reviews a sample of decisions",
+  each: "A person reviews every decision before it takes effect",
+};
+
+const OVERSIGHT_CITIZEN = {
+  full_auto:
+    "This decision was made entirely by an automated system. No staff member reviewed your individual case before the decision took effect.",
+  sample:
+    "Staff review a sample of the decisions this system makes, but your individual decision may not have been reviewed by a person before it took effect.",
+  each:
+    "A staff member reviewed this decision before it took effect. The automated system informed the decision, but a person made the final call.",
+};
+
+const AI_TECH = {
+  genai: "Generative AI",
+  ml: "Machine Learning",
+  nlp: "Natural Language Processing",
+  cv: "Computer Vision",
+  rules: "Rules-based — addition, not an official DTA category (non-AI automation)",
+  statistical: "Statistical model / scoring (legacy category)",
+  hybrid: "Hybrid rules + model (legacy category)",
+};
+
+const LIFECYCLE = {
+  discover: "Discover",
+  operate: "Operate",
+  retire: "Retire",
+};
+
+const RISK_LEVELS = ["Low", "Medium", "High"];
+
+const BIAS_STATUS = {
+  yes: "Yes — tested",
+  no: "No — not tested (flagged)",
+  not_applicable: "Not applicable — no model behaviour to test",
+  not_tested: "No — not tested (flagged)",
+  planned: "Testing planned — not yet done (flagged)",
+  tested_issues: "Tested — issues found, remediation underway (flagged)",
+  tested_passed: "Yes — tested",
+};
+const BIAS_OPTIONS = ["yes", "no", "not_applicable"];
+
+const seedCases = [
+  {
+    id: "uc-001",
+    name: "Automated grants eligibility screening",
+    owner: "Community Programs — Grants team",
+    status: "assessed",
+    triggered: true,
+    assessment: {
+      purpose:
+        "Screen incoming community grant applications against published eligibility criteria before human assessment of eligible applications.",
+      dataSources:
+        "Application form responses; ABN lookup; prior grant history held by the agency.",
+      decisionLogic:
+        "Rules engine applies the published eligibility criteria (entity type, location, funding history) to each application. Applications that fail one or more criteria are marked ineligible; all others proceed to a human assessment panel.",
+      oversight: "each",
+      rationaleOnDemand: true,
+      loggedVersioned: true,
+      driftReassess: true,
+      systemType: "rules",
+      modelVersion: "Eligibility ruleset v3.2",
+      trainingProvenance: "Not applicable — deterministic rules, no training data.",
+      biasTesting: "not_applicable",
+      biasNotes: "Deterministic criteria published in the program guidelines; no model behaviour to test.",
+      retention: "Decision records kept 7 years after the grant round closes, then destroyed.",
+      vendor: "Built in-house by the agency's digital team.",
+      cadence: "Ruleset reviewed each grant round (quarterly) and whenever program guidelines change.",
+      description:
+        "Applies the published eligibility criteria to community grant applications before human assessment. Business objective: reduce panel time spent on ineligible applications. Underpinning product: in-house rules engine on the grants management platform.",
+      ownerEmail: "grants.team@example.gov.au",
+      lifecycle: "operate",
+      domain: "Grants administration / community programs",
+      usagePattern: "Batch screening of each grant round's applications; decision-support ahead of a human panel.",
+      inScopeCriteria:
+        "An automated system applies personal information (applicant details, funding history) to produce an eligibility outcome affecting individuals — meets the APP 1.7 trigger and DTA policy scope.",
+      inherentRisk: "Medium",
+      residualRisk: "Low",
+      impactAssessmentDate: "2026-05-28",
+      lastReviewDate: "",
+      nextReviewDate: "",
+      testingSummary:
+        "Ruleset v3.2 screened against 240 historical applications with known panel outcomes.",
+      testDate: "2026-05-12",
+      testCriteria:
+        "100% agreement required with panel eligibility determinations; manual verification of edge cases (missing ABN, interstate applicants).",
+      testResult: "Pass — 240/240 agreement; edge cases verified manually.",
+      traceTimestamp: "2026-05-12 14:32 AEST",
+      traceInput:
+        "Application #A-1042: incorporated association, based in-region, requesting $18,000, one prior grant (acquitted).",
+      traceChecked:
+        "Entity type against eligible categories; postcode against the program region; requested amount against the $25,000 cap; prior grant acquittal status.",
+      traceRule:
+        "All four criteria passed — the ruleset marks the application 'Eligible' and routes it to the assessment panel.",
+      traceResult:
+        "Eligible — forwarded to the human panel. The automation produced no adverse effect on the applicant.",
+      reviewStatus: "approved",
+      approvedBy: null,
+      techBy: "A. Nguyen — AI Governance Specialist (hypothetical)",
+      techDate: "2026-06-01",
+      legalBy: "S. Patel — Legal Counsel (hypothetical)",
+      legalDate: "2026-06-02",
+      approvedAt: "2026-06-02",
+    },
+  },
+  {
+    id: "uc-002",
+    name: "Chatbot enquiry triage",
+    owner: "Customer Services — Digital channels",
+    status: "assessed",
+    triggered: true,
+    assessment: {
+      purpose:
+        "Classify incoming website enquiries and route them to the right team, including flagging some enquiries for a self-service answer instead of a staff response.",
+      dataSources:
+        "Free-text enquiry content; page the enquiry was submitted from; enquiry category selected by the person.",
+      decisionLogic:
+        "A classification model assigns each enquiry to a queue. Enquiries classified as routine receive an automated self-service response; others are routed to staff queues by topic.",
+      oversight: "sample",
+      rationaleOnDemand: false,
+      loggedVersioned: true,
+      driftReassess: false,
+      systemType: "nlp",
+      modelVersion: "Enquiry classifier v1.4",
+      trainingProvenance:
+        "Trained on 18 months of de-identified historical enquiries held by the agency; no external datasets.",
+      biasTesting: "no",
+      biasNotes:
+        "Routing accuracy by enquiry category not yet analysed; handling of hardship-related enquiries is a known concern.",
+      retention: "Decision records and enquiry content kept 2 years, then de-identified.",
+      vendor: "Vendor-supplied classifier, configured in-house on the agency's CRM platform (hypothetical vendor).",
+      cadence: "Retrained by the vendor twice yearly; no agency-side review schedule yet — flagged.",
+      description:
+        "Classifies incoming website enquiries and routes them to the right team; routine enquiries receive an automated self-service response. Business objective: faster response times and reduced triage workload. Underpinning product: enquiry classifier built on the agency's CRM platform.",
+      ownerEmail: "digital.channels@example.gov.au",
+      lifecycle: "operate",
+      domain: "Customer service / enquiry management",
+      usagePattern: "Real-time classification of every incoming web enquiry.",
+      inScopeCriteria:
+        "The model uses enquiry content (personal information) to determine whether a person receives a staff response or an automated one — substantially informing an outcome that affects them.",
+      inherentRisk: "High",
+      residualRisk: "Medium",
+      impactAssessmentDate: "2026-04-14",
+      lastReviewDate: "2026-04-14",
+      nextReviewDate: "2026-10-14",
+      testingSummary:
+        "Classifier v1.4 evaluated on a held-out sample of 1,000 de-identified enquiries.",
+      testDate: "2026-03-20",
+      testCriteria:
+        "≥90% routing accuracy overall required; category-level accuracy targets not yet defined.",
+      testResult: "Partial pass — 91% overall; accuracy by enquiry category untested.",
+      traceTimestamp: "2026-03-20 09:47 AEST",
+      traceInput:
+        "Enquiry: 'My water bill seems much higher than last quarter and I can't afford it.'",
+      traceChecked:
+        "Enquiry text against the trained categories (billing, hardship, faults, general) and the confidence score of the top category.",
+      traceRule:
+        "Classified 'Billing — high bill' at 0.87 confidence, above the 0.75 auto-response threshold, so a self-service article was sent.",
+      traceResult:
+        "Automated self-service response. Note: the hardship signal ('can't afford') was not separately routed — a known gap feeding the fairness-testing backlog.",
+      reviewStatus: "draft",
+      approvedBy: null,
+      techBy: null,
+      techDate: null,
+      legalBy: null,
+      legalDate: null,
+      approvedAt: null,
+    },
+  },
+  {
+    id: "uc-003",
+    name: "Invoice anomaly detection",
+    owner: "Finance — Accounts payable",
+    status: "outstanding",
+    triggered: null,
+    assessment: null,
+  },
+];
+
+const SCREENING_QUESTIONS = [
+  {
+    key: "personalInfo",
+    q: "Does this system use information about identifiable people?",
+    help: "Names, contact details, application content, account history, or anything that could identify a person — including information that identifies someone when combined with other data the agency holds.",
+  },
+  {
+    key: "affectsPerson",
+    q: "Does it make, or substantially inform, decisions that affect a person?",
+    help: "Eligibility, entitlements, service access, prioritisation, flagging for review — 'substantially inform' counts. The decision doesn't have to be final or fully automatic.",
+  },
+  {
+    key: "automated",
+    q: "Is any part of the decision process automated?",
+    help: "A computer program, model, rules engine, or scoring system — anything where software, not a person, produces or shapes the outcome.",
+  },
+];
+
+function isL2Capable(a) {
+  return !!(a && a.rationaleOnDemand && a.loggedVersioned && a.driftReassess);
+}
+
+function isHighRisk(a) {
+  return a && (a.inherentRisk === "High" || a.residualRisk === "High");
+}
+
+function isLowRiskTier(a) {
+  return a && a.inherentRisk === "Low" && a.residualRisk === "Low";
+}
+
+function reviewLabel(a) {
+  if (a.reviewStatus === "approved") {
+    if (a.techBy || a.legalBy) {
+      return (
+        "FINAL — technical sign-off: " +
+        (a.techBy || "unrecorded") +
+        (a.techDate ? " (" + a.techDate + ")" : "") +
+        " · legal sign-off: " +
+        (a.legalBy || "unrecorded") +
+        (a.legalDate ? " (" + a.legalDate + ")" : "")
+      );
+    }
+    return (
+      "FINAL — self-certified (low risk)" +
+      (a.approvedBy ? " by " + a.approvedBy : "") +
+      (a.approvedAt ? ", " + a.approvedAt : "")
+    );
+  }
+  if (isLowRiskTier(a)) return "DRAFT — pending self-certification";
+  const missing = [!a.techBy && "technical", !a.legalBy && "legal"].filter(Boolean);
+  return "DRAFT — pending " + (missing.length === 2 ? "technical and legal sign-off" : missing[0] + " sign-off");
+}
+
+function newDraft() {
+  return {
+    name: "",
+    owner: "",
+    purpose: "",
+    dataSources: "",
+    decisionLogic: "",
+    oversight: "",
+    rationaleOnDemand: null,
+    loggedVersioned: null,
+    driftReassess: null,
+    systemType: "",
+    modelVersion: "",
+    trainingProvenance: "",
+    biasTesting: "",
+    retention: "",
+    description: "",
+    ownerEmail: "",
+    lifecycle: "",
+    domain: "",
+    usagePattern: "",
+    inScopeCriteria: "",
+    inherentRisk: "",
+    residualRisk: "",
+    impactAssessmentDate: "",
+    lastReviewDate: "",
+    nextReviewDate: "",
+    testingSummary: "",
+    testDate: "",
+    testCriteria: "",
+    testResult: "",
+    traceTimestamp: "",
+    vendor: "",
+    cadence: "",
+    biasNotes: "",
+    traceInput: "",
+    traceChecked: "",
+    traceRule: "",
+    traceResult: "",
+  };
+}
+
+function downloadFile(filename, content, mime) {
+  try {
+    const blob = new Blob([content], { type: mime });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  } catch (e) {
+    console.error("Download failed:", e);
+  }
+}
+
+function buildRegisterJSON(uc) {
+  const a = uc.assessment;
+  const dta = {
+    useCaseName: uc.name,
+    referenceNumber: uc.id.toUpperCase(),
+    description: a.description || "Not recorded",
+    aiTechnologyType: AI_TECH[a.systemType] || "Not recorded",
+    lifecycleStage: LIFECYCLE[a.lifecycle] || "Not recorded",
+    domain: a.domain || "Not recorded",
+    usagePattern: a.usagePattern || "Not recorded",
+    accountableUseCaseOwner: {
+      name: uc.owner,
+      email: a.ownerEmail || "Not recorded",
+    },
+    inScopeCriteria: a.inScopeCriteria || "Not recorded",
+    inherentRiskRating: a.inherentRisk || "Not recorded",
+    residualRiskRating: a.residualRisk || "Not recorded",
+    dateImpactAssessmentLastUpdated: a.impactAssessmentDate || "Not recorded",
+  };
+  if (isHighRisk(a)) {
+    dta.lastReviewDate = a.lastReviewDate || "Not recorded";
+    dta.nextReviewDate = a.nextReviewDate || "Not recorded";
+  }
+  return JSON.stringify(
+    {
+      dtaStandardForAccountability: dta,
+      testingEvidence: {
+        whatWasTested: a.testingSummary || "Not recorded",
+        testDate: a.testDate || "Not recorded",
+        criteria: a.testCriteria || "Not recorded",
+        result: a.testResult || "Not recorded",
+        workedExampleDecisionTrace: {
+          loggedAt: a.traceTimestamp || "Not logged",
+          input: a.traceInput || "Not recorded",
+          whatTheSystemChecked: a.traceChecked || "Not recorded",
+          ruleOrStepThatProducedTheOutcome: a.traceRule || "Not recorded",
+          result: a.traceResult || "Not recorded",
+        },
+      },
+      beyondTheStandard: {
+        app17Trigger: "YES — personal information used in automated decision-making",
+        purposeAsShownToCitizens: a.purpose,
+        dataSources: a.dataSources,
+        decisionLogic: a.decisionLogic,
+        humanOversight: OVERSIGHT[a.oversight],
+        modelNameVersion: a.modelVersion || "Not recorded",
+        developerVendor: a.vendor || "Not recorded",
+        retrainingReviewCadence: a.cadence || "Not recorded",
+        trainingDataProvenance:
+          a.systemType === "rules"
+            ? "Not applicable — rules-based, no training data"
+            : a.trainingProvenance || "Not recorded",
+        biasFairnessTesting: BIAS_STATUS[a.biasTesting] || "Not recorded",
+        biasFairnessNotes: a.biasNotes || "None recorded",
+        dataRetention: a.retention || "Not recorded",
+        runtimeRationale: a.rationaleOnDemand
+          ? "Available — case-specific rationale on request"
+          : "Not available — flagged for remediation",
+        decisionLogging: a.loggedVersioned
+          ? "Logged and timestamped, tied to logic version"
+          : "Not version-tied — flagged",
+        changeDetection: a.driftReassess
+          ? "Logic change prompts re-assessment"
+          : "No drift detection — flagged",
+        complianceStatus: isL2Capable(a)
+          ? "PROVEN IN PRACTICE"
+          : "DOCUMENTED ONLY — REMEDIATION REQUIRED",
+        reviewStatus: reviewLabel(a),
+        reviewTier: isLowRiskTier(a)
+          ? "Low risk — self-certification by AI Governance Specialist"
+          : "Medium/High risk — dual sign-off required (technical + legal)",
+        technicalSignoff: a.techBy ? { by: a.techBy, date: a.techDate } : "Not recorded",
+        legalSignoff: a.legalBy ? { by: a.legalBy, date: a.legalDate } : "Not recorded",
+      },
+      note:
+        "Prototype output — hypothetical example data. Not a register of record. 'Rules-based' is not an official DTA AI technology type; it is included as a clearly-marked addition for non-AI automation.",
+    },
+    null,
+    2
+  );
+}
+
+function buildCitizenText(uc) {
+  const a = uc.assessment;
+  return [
+    "HOW THIS DECISION WAS MADE — " + uc.name,
+    "",
+    a.purpose,
+    "",
+    "WHAT INFORMATION WE USED",
+    a.dataSources,
+    "",
+    "HOW THE AUTOMATED PART WORKS",
+    a.decisionLogic,
+    "",
+    "WAS A PERSON INVOLVED?",
+    OVERSIGHT_CITIZEN[a.oversight],
+    "",
+    "HOW LONG WE KEEP YOUR INFORMATION",
+    a.retention || "Not recorded.",
+    "",
+    "A WORKED EXAMPLE (hypothetical case)",
+    "Input: " + (a.traceInput || "Not recorded"),
+    "What the system checked: " + (a.traceChecked || "Not recorded"),
+    "What produced the outcome: " + (a.traceRule || "Not recorded"),
+    "Result: " + (a.traceResult || "Not recorded"),
+    "",
+    "YOUR OPTIONS",
+    "You can ask us to explain the decision in your specific case — like the worked example above, but for your own circumstances" +
+      (a.rationaleOnDemand
+        ? " — and we can show you the record of what happened and why."
+        : ".") +
+      " You can ask for the decision to be reviewed by a person. If you are not satisfied with the review, you can complain to the agency, and then to the Office of the Australian Information Commissioner (OAIC).",
+    "",
+    "Status: " + reviewLabel(a),
+    "Prototype output — hypothetical example data.",
+  ].join("\n");
+}
+
+function buildExecCSV(uc) {
+  const a = uc.assessment;
+  const esc = (v) => '"' + String(v).replace(/"/g, '""') + '"';
+  const header = [
+    "Use case",
+    "Owner",
+    "System type",
+    "Oversight",
+    "Documented",
+    "Proven in Practice",
+    "Review status",
+    "Dec 2026",
+  ];
+  const row = [
+    uc.name,
+    uc.owner,
+    AI_TECH[a.systemType] || "Not recorded",
+    a.oversight === "each" ? "Every decision" : a.oversight === "sample" ? "Sample" : "None",
+    "Yes",
+    isL2Capable(a) ? "Yes" : "GAP",
+    a.reviewStatus === "approved" ? "Final" : "Draft",
+    isL2Capable(a) ? "Ready" : "At risk",
+  ];
+  return header.map(esc).join(",") + "\n" + row.map(esc).join(",") + "\n";
+}
+
+function LayerLamps({ uc, size = "md" }) {
+  const l1 = uc.status === "assessed";
+  const l2 = l1 && isL2Capable(uc.assessment);
+  const cls = size === "lg" ? "lamps lamps-lg" : "lamps";
+  return (
+    <div className={cls} aria-label={`Documented: ${l1 ? "complete" : "not complete"}. Proven in practice: ${l2 ? "capable" : "not demonstrated"}`}>
+      <span className={"lamp " + (l1 ? "lamp-l1-on" : "lamp-off")}>
+        Documented<em>{l1 ? "complete" : "not done"}</em>
+      </span>
+      <span className={"lamp " + (l2 ? "lamp-l2-on" : l1 ? "lamp-warn" : "lamp-off")}>
+        Proven in Practice<em>{l2 ? "at runtime" : l1 ? "gap" : "—"}</em>
+      </span>
+    </div>
+  );
+}
+
+function Ghost({ label, detail }) {
+  return (
+    <div className="ghost" role="note">
+      <span className="ghost-tag">Future integration — not built</span>
+      <strong>{label}</strong>
+      {detail && <p>{detail}</p>}
+    </div>
+  );
+}
+
+function Eyebrow({ children, color }) {
+  return (
+    <div className="eyebrow" style={color ? { color } : undefined}>
+      {children}
+    </div>
+  );
+}
+
+const STORAGE_KEY = "app17:usecases";
+
+function App() {
+  const [useCases, setUseCases] = useState(seedCases);
+  const [view, setView] = useState("dashboard");
+  const [activeId, setActiveId] = useState(null);
+  const [screening, setScreening] = useState({});
+  const [screenName, setScreenName] = useState("");
+  const [draft, setDraft] = useState(newDraft());
+  const [screenResult, setScreenResult] = useState(null);
+  const [loaded, setLoaded] = useState(false);
+  const [storageOk, setStorageOk] = useState(true);
+  const [savePhase, setSavePhase] = useState(null);
+  const [techNameIn, setTechNameIn] = useState("");
+  const [techDateIn, setTechDateIn] = useState("");
+  const [legalNameIn, setLegalNameIn] = useState("");
+  const [legalDateIn, setLegalDateIn] = useState("");
+  const [citizenAction, setCitizenAction] = useState(null);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const result = await window.storage.get(STORAGE_KEY);
+        if (result && result.value) {
+          setUseCases(JSON.parse(result.value));
+        }
+      } catch (e) {
+        try {
+          await window.storage.set(STORAGE_KEY, JSON.stringify(seedCases));
+        } catch (e2) {
+          setStorageOk(false);
+        }
+      } finally {
+        setLoaded(true);
+      }
+    })();
+  }, []);
+
+  async function persist(next) {
+    try {
+      const result = await window.storage.set(STORAGE_KEY, JSON.stringify(next));
+      if (!result) setStorageOk(false);
+    } catch (e) {
+      setStorageOk(false);
+    }
+  }
+
+  function commit(next) {
+    setUseCases(next);
+    persist(next);
+  }
+
+  const active = useCases.find((u) => u.id === activeId) || null;
+
+  const assessed = useCases.filter((u) => u.status === "assessed");
+  const outstanding = useCases.filter((u) => u.status === "outstanding");
+  const l2capable = assessed.filter((u) => isL2Capable(u.assessment));
+  const l1only = assessed.filter((u) => !isL2Capable(u.assessment));
+
+  const exceptions = [];
+  assessed.forEach((u) => {
+    if (isHighRisk(u.assessment)) {
+      if (!u.assessment.techBy) exceptions.push({ uc: u, flag: "HIGH RISK — TECHNICAL SIGN-OFF MISSING" });
+      if (!u.assessment.legalBy) exceptions.push({ uc: u, flag: "HIGH RISK — LEGAL SIGN-OFF MISSING" });
+    }
+  });
+
+  function startScreening(existing) {
+    setScreening({});
+    setScreenResult(null);
+    if (existing) {
+      setActiveId(existing.id);
+      setScreenName(existing.name);
+    } else {
+      setActiveId(null);
+      setScreenName("");
+    }
+    setView("prestart");
+  }
+
+  function finishScreening() {
+    const triggered = SCREENING_QUESTIONS.every((q) => screening[q.key] === true);
+    setScreenResult(triggered ? "triggered" : "not-triggered");
+    if (!triggered) {
+      if (activeId) {
+        commit(
+          useCases.map((c) =>
+            c.id === activeId ? { ...c, status: "screened-out", triggered: false } : c
+          )
+        );
+      } else if (screenName.trim()) {
+        commit([
+          ...useCases,
+          {
+            id: "uc-" + String(useCases.length + 1).padStart(3, "0"),
+            name: screenName.trim(),
+            owner: "",
+            status: "screened-out",
+            triggered: false,
+            assessment: null,
+          },
+        ]);
+      }
+    }
+  }
+
+  function beginAssessment() {
+    setDraft({ ...newDraft(), name: screenName || (active ? active.name : ""), owner: active ? active.owner : "" });
+    setView("assessment");
+  }
+
+  function editAssessment() {
+    if (!active || !active.assessment) return;
+    const a = active.assessment;
+    setDraft({
+      name: active.name,
+      owner: active.owner,
+      purpose: a.purpose,
+      dataSources: a.dataSources,
+      decisionLogic: a.decisionLogic,
+      oversight: a.oversight,
+      rationaleOnDemand: a.rationaleOnDemand,
+      loggedVersioned: a.loggedVersioned,
+      driftReassess: a.driftReassess,
+      systemType: a.systemType || "",
+      modelVersion: a.modelVersion || "",
+      trainingProvenance: a.trainingProvenance || "",
+      biasTesting: a.biasTesting || "",
+      retention: a.retention || "",
+      description: a.description || "",
+      ownerEmail: a.ownerEmail || "",
+      lifecycle: a.lifecycle || "",
+      domain: a.domain || "",
+      usagePattern: a.usagePattern || "",
+      inScopeCriteria: a.inScopeCriteria || "",
+      inherentRisk: a.inherentRisk || "",
+      residualRisk: a.residualRisk || "",
+      impactAssessmentDate: a.impactAssessmentDate || "",
+      lastReviewDate: a.lastReviewDate || "",
+      nextReviewDate: a.nextReviewDate || "",
+      testingSummary: a.testingSummary || "",
+      testDate: a.testDate || "",
+      testCriteria: a.testCriteria || "",
+      testResult: a.testResult || "",
+      traceTimestamp: a.traceTimestamp || "",
+      vendor: a.vendor || "",
+      cadence: a.cadence || "",
+      biasNotes: a.biasNotes || "",
+      traceInput: a.traceInput || "",
+      traceChecked: a.traceChecked || "",
+      traceRule: a.traceRule || "",
+      traceResult: a.traceResult || "",
+    });
+    setView("assessment");
+  }
+
+  async function submitAssessment() {
+    const a = {
+      purpose: draft.purpose,
+      dataSources: draft.dataSources,
+      decisionLogic: draft.decisionLogic,
+      oversight: draft.oversight,
+      rationaleOnDemand: draft.rationaleOnDemand === true,
+      loggedVersioned: draft.loggedVersioned === true,
+      driftReassess: draft.driftReassess === true,
+      systemType: draft.systemType,
+      modelVersion: draft.modelVersion,
+      trainingProvenance: draft.trainingProvenance,
+      biasTesting: draft.biasTesting,
+      retention: draft.retention,
+      description: draft.description,
+      ownerEmail: draft.ownerEmail,
+      lifecycle: draft.lifecycle,
+      domain: draft.domain,
+      usagePattern: draft.usagePattern,
+      inScopeCriteria: draft.inScopeCriteria,
+      inherentRisk: draft.inherentRisk,
+      residualRisk: draft.residualRisk,
+      impactAssessmentDate: draft.impactAssessmentDate,
+      lastReviewDate: draft.lastReviewDate,
+      nextReviewDate: draft.nextReviewDate,
+      testingSummary: draft.testingSummary,
+      testDate: draft.testDate,
+      testCriteria: draft.testCriteria,
+      testResult: draft.testResult,
+      traceTimestamp: draft.traceTimestamp,
+      vendor: draft.vendor,
+      cadence: draft.cadence,
+      biasNotes: draft.biasNotes,
+      traceInput: draft.traceInput,
+      traceChecked: draft.traceChecked,
+      traceRule: draft.traceRule,
+      traceResult: draft.traceResult,
+      reviewStatus: "draft",
+      approvedBy: null,
+      techBy: null,
+      techDate: null,
+      legalBy: null,
+      legalDate: null,
+      approvedAt: null,
+    };
+    setSavePhase("saving");
+    let id = activeId;
+    let next;
+    if (activeId) {
+      next = useCases.map((c) =>
+        c.id === activeId
+          ? { ...c, name: draft.name, owner: draft.owner, status: "assessed", triggered: true, assessment: a }
+          : c
+      );
+    } else {
+      id = "uc-" + String(useCases.length + 1).padStart(3, "0");
+      next = [
+        ...useCases,
+        { id, name: draft.name, owner: draft.owner, status: "assessed", triggered: true, assessment: a },
+      ];
+    }
+    setUseCases(next);
+    await persist(next);
+    await new Promise((r) => setTimeout(r, 400));
+    setSavePhase("saved");
+    await new Promise((r) => setTimeout(r, 650));
+    setSavePhase(null);
+    setActiveId(id);
+    setTechNameIn("");
+    setTechDateIn("");
+    setLegalNameIn("");
+    setLegalDateIn("");
+    setView("outputs");
+  }
+
+  function selfCertify() {
+    if (!active || !isLowRiskTier(active.assessment)) return;
+    commit(
+      useCases.map((c) =>
+        c.id === active.id
+          ? {
+              ...c,
+              assessment: {
+                ...c.assessment,
+                reviewStatus: "approved",
+                approvedBy: "AI Governance Specialist (self-certified)",
+                approvedAt: new Date().toISOString().slice(0, 10),
+              },
+            }
+          : c
+      )
+    );
+  }
+
+  function recordSignoff(kind) {
+    if (!active) return;
+    const name = kind === "tech" ? techNameIn.trim() : legalNameIn.trim();
+    const date = kind === "tech" ? techDateIn : legalDateIn;
+    if (!name || !date) return;
+    const a = active.assessment;
+    const otherDone = kind === "tech" ? !!a.legalBy : !!a.techBy;
+    commit(
+      useCases.map((c) =>
+        c.id === active.id
+          ? {
+              ...c,
+              assessment: {
+                ...c.assessment,
+                [kind + "By"]: name,
+                [kind + "Date"]: date,
+                ...(otherDone ? { reviewStatus: "approved", approvedAt: date } : {}),
+              },
+            }
+          : c
+      )
+    );
+    if (kind === "tech") {
+      setTechNameIn("");
+      setTechDateIn("");
+    } else {
+      setLegalNameIn("");
+      setLegalDateIn("");
+    }
+  }
+
+  const highRiskDraft = draft.inherentRisk === "High" || draft.residualRisk === "High";
+  const trainedModelDraft = draft.systemType && draft.systemType !== "rules";
+
+  const draftComplete =
+    draft.name.trim() &&
+    draft.owner.trim() &&
+    draft.ownerEmail.trim() &&
+    draft.description.trim() &&
+    draft.purpose.trim() &&
+    draft.dataSources.trim() &&
+    draft.decisionLogic.trim() &&
+    draft.oversight &&
+    draft.systemType &&
+    draft.lifecycle &&
+    draft.domain.trim() &&
+    draft.usagePattern.trim() &&
+    draft.inScopeCriteria.trim() &&
+    draft.inherentRisk &&
+    draft.residualRisk &&
+    draft.impactAssessmentDate.trim() &&
+    (!highRiskDraft || (draft.lastReviewDate.trim() && draft.nextReviewDate.trim())) &&
+    draft.modelVersion.trim() &&
+    draft.vendor.trim() &&
+    draft.cadence.trim() &&
+    (!trainedModelDraft || draft.trainingProvenance.trim()) &&
+    draft.biasTesting &&
+    draft.retention.trim() &&
+    draft.testingSummary.trim() &&
+    draft.testDate.trim() &&
+    draft.testCriteria.trim() &&
+    draft.testResult.trim() &&
+    draft.traceInput.trim() &&
+    draft.traceChecked.trim() &&
+    draft.traceRule.trim() &&
+    draft.traceResult.trim() &&
+    draft.rationaleOnDemand !== null &&
+    draft.loggedVersioned !== null &&
+    draft.driftReassess !== null;
+
+  return (
+    <div className="root">
+      <header className="hdr">
+        <div className="hdr-left">
+          <h1>Does your automated system make decisions about people? This helps you disclose it properly.</h1>
+          <p className="hdr-sub">
+            For government teams whose systems decide or shape outcomes for individuals — like AI
+            helping decide eligibility, priority, or access to a service. One assessment produces a
+            register entry, a citizen-facing notice, and an executive summary. Screening takes about
+            2 minutes; a full assessment about 15–20.
+          </p>
+          <div className="hdr-tag">APP 1.7 · AUTOMATED DECISION-MAKING · EFFECTIVE DEC 2026</div>
+        </div>
+        <div className="proto-badge" role="note">
+          PROTOTYPE — standalone demonstration.
+          <br />
+          No real agency data. Rules-based: no AI in the assessment path.
+        </div>
+      </header>
+
+      <nav className="nav" aria-label="Views">
+        <button className={view === "dashboard" ? "nav-b on" : "nav-b"} onClick={() => setView("dashboard")}>
+          Portfolio dashboard
+        </button>
+        <button className="nav-b nav-cta" onClick={() => startScreening(null)}>
+          + Screen a new use case
+        </button>
+      </nav>
+
+      {!storageOk && (
+        <p className="save-note" role="status">
+          ⚠ Saved storage isn't available in this environment — changes will work normally but won't
+          survive a page refresh.
+        </p>
+      )}
+
+      {!loaded && (
+        <main>
+          <p className="loading" role="status">Loading saved use cases…</p>
+        </main>
+      )}
+
+      {view === "dashboard" && loaded && (
+        <main>
+          <div className="process" aria-label="How this tool works">
+            <span className="p-step"><span className="p-n">1</span> Screen</span>
+            <span className="p-arrow" aria-hidden="true">→</span>
+            <span className="p-step"><span className="p-n">2</span> Assess</span>
+            <span className="p-arrow" aria-hidden="true">→</span>
+            <span className="p-step"><span className="p-n">3</span> Get 3 outputs</span>
+            <span className="p-detail">register entry · citizen notice · exec summary</span>
+          </div>
+
+          <details className="about">
+            <summary>About this prototype — a quick exercise, not a finished system</summary>
+            <div className="about-body">
+              <p>
+                This is a fast prototype exploring the problem space: what would it take for an
+                agency to determine, disclose, and prove its APP 1.7 compliance? It is not a
+                finished or authoritative system. A real implementation would need to be worked
+                through <em>with</em> the people it affects — citizens, front-line staff, compliance
+                practitioners — not developed for them in isolation.
+              </p>
+              <p className="about-list-intro">
+                An open question this exercise raises, rather than a claim it's been done: who would
+                need to be in the room next?
+              </p>
+              <ul className="about-list">
+                <li>Business and system owners</li>
+                <li>Compliance officers</li>
+                <li>A dedicated technical validator — the role banks call an "AI Model Validator": someone who verifies that claims made about a model are actually true, not just documents them</li>
+                <li>Legal and privacy teams</li>
+                <li>Citizen and community representatives</li>
+                <li>The DTA and equivalent state bodies</li>
+              </ul>
+              <p className="about-gap">
+                Named gap: procurement/vendor input and a regulator-facing (OAIC/DTA) view are out
+                of scope for this prototype — deliberately named here rather than silently absent.
+              </p>
+            </div>
+          </details>
+
+          <div className="legend">
+            <strong>Documented — system-level:</strong> the use case is written up and on the register (done once, re-done on change).{" "}
+            <strong>Proven in Practice — decision-level:</strong> the agency can show, for any individual decision, what happened and why (has to hold every time the system runs). A use case can be fully documented and still fail the person it decides about.
+          </div>
+
+          <section className="stats" aria-label="Portfolio status">
+            <div className="stat">
+              <span className="stat-n">{useCases.length}</span>
+              <span className="stat-l">use cases identified</span>
+            </div>
+            <div className="stat">
+              <span className="stat-n" style={{ color: "#00E5FF" }}>{assessed.length}</span>
+              <span className="stat-l">assessed</span>
+            </div>
+            <div className="stat">
+              <span className="stat-n" style={{ color: "#FF4D6D" }}>{outstanding.length}</span>
+              <span className="stat-l">outstanding before Dec 2026</span>
+            </div>
+            <div className="stat">
+              <span className="stat-n" style={{ color: "#FFC400" }}>{l1only.length}</span>
+              <span className="stat-l">Documented only — flagged</span>
+            </div>
+            <div className="stat">
+              <span className="stat-n" style={{ color: "#00FF85" }}>{l2capable.length}</span>
+              <span className="stat-l">Proven in practice</span>
+            </div>
+          </section>
+
+          {exceptions.length > 0 && (
+            <section className="exceptions" aria-label="Exceptions requiring executive attention">
+              <Eyebrow color="#FF4D6D">EXCEPTIONS — EXECUTIVE ATTENTION</Eyebrow>
+              {exceptions.map((ex, i) => (
+                <div key={i} className="exception-row" role="alert">
+                  <span className="exception-flag">{ex.flag}</span>
+                  <span className="exception-name">{ex.uc.name} ({ex.uc.id.toUpperCase()})</span>
+                  <button className="btn btn-sm" onClick={() => { setActiveId(ex.uc.id); setView("outputs"); }}>
+                    Open →
+                  </button>
+                </div>
+              ))}
+            </section>
+          )}
+
+          <section aria-label="Use cases">
+            <Eyebrow>USE CASES</Eyebrow>
+            <div className="cards">
+              {useCases.map((uc) => (
+                <article key={uc.id} className="card">
+                  <div className="card-top">
+                    <span className="mono-id">{uc.id.toUpperCase()}</span>
+                    <LayerLamps uc={uc} />
+                  </div>
+                  <h3>{uc.name}</h3>
+                  <p className="card-owner">{uc.owner || "Owner not yet recorded"}</p>
+                  {uc.status === "assessed" && (
+                    <span className={uc.assessment.reviewStatus === "approved" ? "rev-tag rev-final" : "rev-tag rev-draft"}>
+                      {uc.assessment.reviewStatus === "approved" ? "FINAL — approved" : "DRAFT — pending approval"}
+                    </span>
+                  )}
+                  {uc.status === "assessed" && !isL2Capable(uc.assessment) && (
+                    <p className="flag-amber" role="alert">
+                      ⚠ Documented, but cannot yet produce a case-specific rationale at runtime. The
+                      disclosure this generates promises more than the system can currently show.
+                    </p>
+                  )}
+                  {uc.status === "outstanding" && (
+                    <p className="flag-red">Not yet screened — unassessed exposure ahead of the December deadline.</p>
+                  )}
+                  {uc.status === "screened-out" && (
+                    <p className="flag-plain">Screened: does not trigger APP 1.7. Decision recorded.</p>
+                  )}
+                  <div className="card-actions">
+                    {uc.status === "assessed" && (
+                      <button className="btn" onClick={() => { setActiveId(uc.id); setView("outputs"); }}>
+                        View the three outputs →
+                      </button>
+                    )}
+                    {uc.status === "outstanding" && (
+                      <button className="btn btn-bright" onClick={() => startScreening(uc)}>
+                        Start screening →
+                      </button>
+                    )}
+                  </div>
+                </article>
+              ))}
+            </div>
+          </section>
+
+          <div className="ghost-row">
+            <Ghost
+              label="Would connect to: agency AI Use Case Register"
+              detail="Register entries generated here would link to (not duplicate) the agency's mandated internal register — one record, one owner, no parallel copies."
+            />
+            <Ghost
+              label="Would connect to: CMDB / systems inventory"
+              detail="Each use case would reference the system record it runs on, so a system change can trigger a re-assessment prompt."
+            />
+            <Ghost
+              label="Would connect to: DTA 6-monthly reporting"
+              detail="Today this reporting step is an email to ai@dta.gov.au — no shared schema, no API. Exports here would target that format until something better exists."
+            />
+          </div>
+
+          <section className="gap-panel" aria-label="Systemic gap">
+            <Eyebrow color="#FF4D6D">SYSTEMIC GAP — NOT SOLVED BY THIS TOOL</Eyebrow>
+            <h2>Every agency does this alone</h2>
+            <p>
+              94 mandatory Commonwealth entities each keep their own AI use case register and submit
+              it to the DTA every six months by email. There is no shared schema, no public
+              use-case-level register, and no visible mechanism for cross-agency aggregation — the
+              DTA centralises high-level transparency statements only. Internationally, Estonia's
+              X-Road links decentralised registers through secure exchange ("data resides where it
+              is created"), while the EU AI Act mandates a central public database for high-risk
+              systems. Australia currently sits at neither end. This tool is scoped to what a single
+              agency controls; whether disclosure should aggregate across government is an open
+              policy question, named here rather than papered over.
+            </p>
+          </section>
+
+          <section className="future-panel" aria-label="Future state">
+            <span className="ghost-tag">FUTURE STATE — NOT BUILT, DELIBERATELY</span>
+            <p>
+              This tool is rules-based: plain-language questions, deterministic logic, generated
+              outputs. No AI sits in the assessment or determination path — a compliance instrument
+              that is itself a black box would undermine the transparency it argues for. A later
+              version could add <strong>AI-assisted drafting</strong> of the plain-language citizen
+              notice (human-reviewed before publishing) and <strong>flagging of borderline
+              screenings</strong> for human escalation. It would never include AI making the APP 1.7
+              trigger determination or publishing a disclosure without review.
+            </p>
+          </section>
+
+          <footer className="foot">
+            Jurisdictional note: APP 1.7 is a Commonwealth Privacy Act obligation. Victorian state
+            entities operate under the Privacy and Data Protection Act 2014 (Vic) and OVIC guidance,
+            with no equivalent mandated central AI use case register. This is a public-sector-wide
+            demonstration piece, not legal advice on any specific agency's obligations. All example
+            use cases are hypothetical.
+          </footer>
+        </main>
+      )}
+
+      {view === "prestart" && (
+        <main className="narrow">
+          <Eyebrow color="#00E5FF">BEFORE YOU START</Eyebrow>
+          <h2>Two steps, three documents at the end</h2>
+          <div className="pre-steps">
+            <div className="pre-step">
+              <span className="p-n">1</span>
+              <div>
+                <strong>Screening — about 2 minutes.</strong>
+                <p>Three plain-language yes/no questions to check whether APP 1.7 applies to your use case at all. If it doesn't, that result is recorded and you're done.</p>
+              </div>
+            </div>
+            <div className="pre-step">
+              <span className="p-n">2</span>
+              <div>
+                <strong>Full assessment — about 15–20 minutes.</strong>
+                <p>A structured form covering what the system does, the data it uses, who's accountable, the risk ratings, and the testing evidence behind it. Usually completed by an AI Governance Specialist — this step needs both technical and policy literacy.</p>
+              </div>
+            </div>
+          </div>
+          <p>
+            At the end, one set of answers generates three documents: a register-ready entry, a
+            plain-language notice for the people affected, and an executive summary row. Your
+            progress is saved on this device — you can leave and come back.
+          </p>
+          <button className="btn btn-bright btn-big" onClick={() => setView("screening")}>
+            Start →
+          </button>
+          <button className="link-back" onClick={() => setView("dashboard")}>
+            ← Back to dashboard
+          </button>
+        </main>
+      )}
+
+      {view === "screening" && (
+        <main className="narrow">
+          <Eyebrow color="#00E5FF">STEP 1 OF 2 — SCREENING · FOR THE BUSINESS OWNER</Eyebrow>
+          <h2>Does this use case trigger APP 1.7?</h2>
+          <p className="lede">
+            Three plain-language questions. If the answer to all three is yes, the use case needs a
+            full assessment before December 2026.
+          </p>
+
+          {!activeId && (
+            <div className="field">
+              <label htmlFor="scr-name">What is the use case called?</label>
+              <input
+                id="scr-name"
+                value={screenName}
+                onChange={(e) => setScreenName(e.target.value)}
+                placeholder="e.g. Automated licence renewal checks"
+              />
+            </div>
+          )}
+
+          {SCREENING_QUESTIONS.map((q, i) => (
+            <fieldset key={q.key} className="q-block">
+              <legend>
+                <span className="q-num">{i + 1}</span> {q.q}
+              </legend>
+              <p className="q-help">{q.help}</p>
+              <div className="yn">
+                <button
+                  className={"yn-b " + (screening[q.key] === true ? "yn-on" : "")}
+                  onClick={() => setScreening((s) => ({ ...s, [q.key]: true }))}
+                >
+                  Yes
+                </button>
+                <button
+                  className={"yn-b " + (screening[q.key] === false ? "yn-on" : "")}
+                  onClick={() => setScreening((s) => ({ ...s, [q.key]: false }))}
+                >
+                  No
+                </button>
+              </div>
+            </fieldset>
+          ))}
+
+          {screenResult === null && (
+            <button
+              className="btn btn-bright btn-big"
+              disabled={
+                SCREENING_QUESTIONS.some((q) => screening[q.key] === undefined) ||
+                (!activeId && !screenName.trim())
+              }
+              onClick={finishScreening}
+            >
+              Get the screening result
+            </button>
+          )}
+
+          {screenResult === "triggered" && (
+            <div className="result result-trig" role="status">
+              <strong>APP 1.7 is triggered.</strong>
+              <p>
+                This use case uses personal information in automated decision-making. It needs a
+                full assessment, a register entry, and a citizen-facing disclosure. It has been
+                routed to your AI Governance Specialist.
+              </p>
+              <button className="btn btn-bright" onClick={beginAssessment}>
+                Continue to the full assessment →
+              </button>
+            </div>
+          )}
+
+          {screenResult === "not-triggered" && (
+            <div className="result" role="status">
+              <strong>Not triggered — decision recorded.</strong>
+              <p>
+                Based on these answers, APP 1.7 does not apply. The screening result and answers are
+                logged, so there is an audit trail showing this was considered, not missed. Re-screen
+                if the use case changes.
+              </p>
+              <button className="btn" onClick={() => setView("dashboard")}>
+                Back to dashboard
+              </button>
+            </div>
+          )}
+
+          <button className="link-back" onClick={() => setView("dashboard")}>
+            ← Cancel and return to dashboard
+          </button>
+        </main>
+      )}
+
+      {view === "assessment" && (
+        <main className="narrow">
+          <Eyebrow color="#00E5FF">STEP 2 OF 2 — FULL ASSESSMENT · FOR THE AI GOVERNANCE SPECIALIST</Eyebrow>
+          <h2>Structured assessment</h2>
+          <p className="lede">
+            One set of answers generates all three outputs. Write for a member of the public — the
+            citizen notice is built directly from these words.
+          </p>
+
+          <div className="field">
+            <label htmlFor="a-name">Use case name</label>
+            <input id="a-name" value={draft.name} onChange={(e) => setDraft({ ...draft, name: e.target.value })} />
+          </div>
+          <div className="field">
+            <label htmlFor="a-owner">Accountable use case owner — name</label>
+            <input id="a-owner" value={draft.owner} onChange={(e) => setDraft({ ...draft, owner: e.target.value })} placeholder="Hypothetical only — e.g. Community Programs — Grants team" />
+          </div>
+          <div className="field">
+            <label htmlFor="a-owneremail">Accountable use case owner — email</label>
+            <input id="a-owneremail" value={draft.ownerEmail} onChange={(e) => setDraft({ ...draft, ownerEmail: e.target.value })} placeholder="Hypothetical only — e.g. grants.team@example.gov.au" />
+          </div>
+          <div className="field">
+            <label htmlFor="a-desc">Description — what the AI does, its business objective, and the underpinning product name if applicable</label>
+            <textarea id="a-desc" rows={3} value={draft.description} onChange={(e) => setDraft({ ...draft, description: e.target.value })} />
+            <p className="q-help">This is the DTA register description. The purpose field below is what citizens see — write each for its audience.</p>
+          </div>
+          <div className="field">
+            <label htmlFor="a-purpose">Purpose — what decision does this system make or inform? (citizen-facing)</label>
+            <textarea id="a-purpose" rows={3} value={draft.purpose} onChange={(e) => setDraft({ ...draft, purpose: e.target.value })} />
+          </div>
+          <div className="field">
+            <label htmlFor="a-data">Data sources — what information about people does it use?</label>
+            <textarea id="a-data" rows={3} value={draft.dataSources} onChange={(e) => setDraft({ ...draft, dataSources: e.target.value })} />
+          </div>
+          <div className="field">
+            <label htmlFor="a-logic">Decision logic — how does it get from that information to an outcome?</label>
+            <textarea id="a-logic" rows={4} value={draft.decisionLogic} onChange={(e) => setDraft({ ...draft, decisionLogic: e.target.value })} placeholder="Plain description of the rules, model, or scoring — no jargon" />
+          </div>
+
+          <fieldset className="q-block">
+            <legend>System details</legend>
+            <div className="field">
+              <label htmlFor="a-systype">AI technology type (DTA Standard for Accountability)</label>
+              <select id="a-systype" value={draft.systemType} onChange={(e) => setDraft({ ...draft, systemType: e.target.value })}>
+                <option value="">Select a type…</option>
+                <option value="genai">Generative AI</option>
+                <option value="ml">Machine Learning</option>
+                <option value="nlp">Natural Language Processing</option>
+                <option value="cv">Computer Vision</option>
+                <option value="rules">Rules-based (addition — not an official DTA category)</option>
+              </select>
+              <p className="q-help">
+                Rules-based is not an official DTA AI technology type. It's included here so non-AI
+                automation — which can still trigger APP 1.7 — gets registered rather than falling
+                through the taxonomy. It's clearly marked as an addition in every output.
+              </p>
+            </div>
+            <div className="field">
+              <label htmlFor="a-lifecycle">Lifecycle stage</label>
+              <select id="a-lifecycle" value={draft.lifecycle} onChange={(e) => setDraft({ ...draft, lifecycle: e.target.value })}>
+                <option value="">Select a stage…</option>
+                {Object.entries(LIFECYCLE).map(([k, label]) => (
+                  <option key={k} value={k}>{label}</option>
+                ))}
+              </select>
+            </div>
+            <div className="field">
+              <label htmlFor="a-domain">Domain</label>
+              <input id="a-domain" value={draft.domain} onChange={(e) => setDraft({ ...draft, domain: e.target.value })} placeholder="e.g. Grants administration / community programs" />
+            </div>
+            <div className="field">
+              <label htmlFor="a-usage">Usage pattern</label>
+              <input id="a-usage" value={draft.usagePattern} onChange={(e) => setDraft({ ...draft, usagePattern: e.target.value })} placeholder="e.g. Batch screening each round; real-time per enquiry" />
+            </div>
+            <div className="field">
+              <label htmlFor="a-modelver">Model / ruleset name and version</label>
+              <input id="a-modelver" value={draft.modelVersion} onChange={(e) => setDraft({ ...draft, modelVersion: e.target.value })} placeholder="e.g. Eligibility ruleset v3.2" />
+              <p className="q-help">The exact version matters — it's what individual decisions get traced back to.</p>
+            </div>
+            <div className="field">
+              <label htmlFor="a-vendor">Developer / vendor — who built this system?</label>
+              <input id="a-vendor" value={draft.vendor} onChange={(e) => setDraft({ ...draft, vendor: e.target.value })} placeholder="e.g. Built in-house; or vendor-supplied product, configured internally" />
+            </div>
+            <div className="field">
+              <label htmlFor="a-cadence">Retraining / review cadence — will this be regularly retrained or reviewed, and on what schedule?</label>
+              <input id="a-cadence" value={draft.cadence} onChange={(e) => setDraft({ ...draft, cadence: e.target.value })} placeholder="e.g. Retrained twice yearly; rules reviewed each quarter" />
+            </div>
+            {trainedModelDraft && (
+              <div className="field">
+                <label htmlFor="a-provenance">Training data provenance — what was this trained on, and where did that data come from?</label>
+                <textarea id="a-provenance" rows={3} value={draft.trainingProvenance} onChange={(e) => setDraft({ ...draft, trainingProvenance: e.target.value })} />
+                <p className="q-help">Shown because you selected a trained model type. Rules-based systems skip this question.</p>
+              </div>
+            )}
+            <div className="field">
+              <label htmlFor="a-bias">Bias / fairness testing — has this system's behaviour been tested for bias?</label>
+              <select id="a-bias" value={draft.biasTesting} onChange={(e) => setDraft({ ...draft, biasTesting: e.target.value })}>
+                <option value="">Select…</option>
+                {BIAS_OPTIONS.map((k) => (
+                  <option key={k} value={k}>{BIAS_STATUS[k]}</option>
+                ))}
+              </select>
+            </div>
+            <div className="field">
+              <label htmlFor="a-biasnotes">Bias / fairness notes — what was tested, what wasn't, and any known concerns (optional)</label>
+              <textarea id="a-biasnotes" rows={2} value={draft.biasNotes} onChange={(e) => setDraft({ ...draft, biasNotes: e.target.value })} />
+            </div>
+            <div className="field">
+              <label htmlFor="a-retention">Data retention period for decision records — how long are they kept, and what happens then?</label>
+              <input id="a-retention" value={draft.retention} onChange={(e) => setDraft({ ...draft, retention: e.target.value })} placeholder="e.g. Kept 7 years after the matter closes, then destroyed" />
+              <p className="q-help">This appears in the citizen-facing notice in plain language.</p>
+            </div>
+          </fieldset>
+
+          <fieldset className="q-block">
+            <legend>Scope &amp; risk (DTA Standard for Accountability)</legend>
+            <div className="field">
+              <label htmlFor="a-inscope">In-scope criteria — why is this use case in scope of the policy?</label>
+              <textarea id="a-inscope" rows={3} value={draft.inScopeCriteria} onChange={(e) => setDraft({ ...draft, inScopeCriteria: e.target.value })} placeholder="What about this use case brings it within the policy and APP 1.7?" />
+            </div>
+            <div className="field">
+              <label htmlFor="a-inherent">Inherent risk rating (before controls)</label>
+              <select id="a-inherent" value={draft.inherentRisk} onChange={(e) => setDraft({ ...draft, inherentRisk: e.target.value })}>
+                <option value="">Select a rating…</option>
+                {RISK_LEVELS.map((r) => (
+                  <option key={r} value={r}>{r}</option>
+                ))}
+              </select>
+            </div>
+            <div className="field">
+              <label htmlFor="a-residual">Residual risk rating (after controls)</label>
+              <select id="a-residual" value={draft.residualRisk} onChange={(e) => setDraft({ ...draft, residualRisk: e.target.value })}>
+                <option value="">Select a rating…</option>
+                {RISK_LEVELS.map((r) => (
+                  <option key={r} value={r}>{r}</option>
+                ))}
+              </select>
+            </div>
+            <div className="field">
+              <label htmlFor="a-impactdate">Date impact assessment last updated</label>
+              <input id="a-impactdate" type="date" value={draft.impactAssessmentDate} onChange={(e) => setDraft({ ...draft, impactAssessmentDate: e.target.value })} />
+            </div>
+            {highRiskDraft && (
+              <div className="high-risk-block">
+                <p className="q-help">
+                  A High risk rating requires review dates — high-risk use cases can't sit
+                  unreviewed.
+                </p>
+                <div className="field">
+                  <label htmlFor="a-lastreview">Last review date</label>
+                  <input id="a-lastreview" type="date" value={draft.lastReviewDate} onChange={(e) => setDraft({ ...draft, lastReviewDate: e.target.value })} />
+                </div>
+                <div className="field">
+                  <label htmlFor="a-nextreview">Next review date</label>
+                  <input id="a-nextreview" type="date" value={draft.nextReviewDate} onChange={(e) => setDraft({ ...draft, nextReviewDate: e.target.value })} />
+                </div>
+              </div>
+            )}
+          </fieldset>
+
+          <fieldset className="q-block trace-block">
+            <legend>Testing evidence</legend>
+            <p className="q-help">
+              Structured like a test record, not a free-text box — a technical reviewer should be
+              able to read this the way they'd read an audit log entry.
+            </p>
+            <div className="field">
+              <label htmlFor="a-testing">What was tested — component, version, and sample</label>
+              <textarea id="a-testing" rows={2} value={draft.testingSummary} onChange={(e) => setDraft({ ...draft, testingSummary: e.target.value })} placeholder="e.g. Ruleset v3.2 screened against 240 historical applications with known outcomes" />
+            </div>
+            <div className="field">
+              <label htmlFor="a-testdate">Test date</label>
+              <input id="a-testdate" type="date" value={draft.testDate} onChange={(e) => setDraft({ ...draft, testDate: e.target.value })} />
+            </div>
+            <div className="field">
+              <label htmlFor="a-testcrit">Criteria — what did "pass" mean?</label>
+              <textarea id="a-testcrit" rows={2} value={draft.testCriteria} onChange={(e) => setDraft({ ...draft, testCriteria: e.target.value })} placeholder="e.g. 100% agreement with panel determinations; edge cases verified manually" />
+            </div>
+            <div className="field">
+              <label htmlFor="a-testres">Result — pass, partial, or fail, with the numbers</label>
+              <textarea id="a-testres" rows={2} value={draft.testResult} onChange={(e) => setDraft({ ...draft, testResult: e.target.value })} placeholder="e.g. Pass — 240/240 agreement" />
+            </div>
+            <p className="q-help">
+              Worked example — one concrete hypothetical case, traced end to end like a log entry.
+              This appears in the register entry, the citizen view, and the executive summary, so
+              the promise "we can explain your decision" is backed by a visible example, not just a
+              claim. Use invented details only.
+            </p>
+            <div className="field">
+              <label htmlFor="a-tstamp">Trace logged at (timestamp, optional)</label>
+              <input id="a-tstamp" value={draft.traceTimestamp} onChange={(e) => setDraft({ ...draft, traceTimestamp: e.target.value })} placeholder="e.g. 2026-05-12 14:32 AEST" />
+            </div>
+            <div className="field">
+              <label htmlFor="a-tin">Input — the case as it arrived</label>
+              <textarea id="a-tin" rows={2} value={draft.traceInput} onChange={(e) => setDraft({ ...draft, traceInput: e.target.value })} />
+            </div>
+            <div className="field">
+              <label htmlFor="a-tch">What the system checked</label>
+              <textarea id="a-tch" rows={2} value={draft.traceChecked} onChange={(e) => setDraft({ ...draft, traceChecked: e.target.value })} />
+            </div>
+            <div className="field">
+              <label htmlFor="a-tru">What rule / step produced the outcome</label>
+              <textarea id="a-tru" rows={2} value={draft.traceRule} onChange={(e) => setDraft({ ...draft, traceRule: e.target.value })} />
+            </div>
+            <div className="field">
+              <label htmlFor="a-tre">Result</label>
+              <textarea id="a-tre" rows={2} value={draft.traceResult} onChange={(e) => setDraft({ ...draft, traceResult: e.target.value })} />
+            </div>
+          </fieldset>
+
+          <fieldset className="q-block">
+            <legend>Human oversight — which is true?</legend>
+            {Object.entries(OVERSIGHT).map(([k, label]) => (
+              <label key={k} className="radio-row">
+                <input
+                  type="radio"
+                  name="oversight"
+                  checked={draft.oversight === k}
+                  onChange={() => setDraft({ ...draft, oversight: k })}
+                />
+                {label}
+              </label>
+            ))}
+          </fieldset>
+
+          <fieldset className="q-block l2-block">
+            <legend>
+              Proven in Practice — runtime capability check <span className="l2-tag">the part most assessments skip</span>
+            </legend>
+            <p className="q-help">
+              These three questions decide whether the disclosure is backed by anything. "Yes" means
+              the capability exists today — not that it's planned.
+            </p>
+            {[
+              ["rationaleOnDemand", "If a person asks, can the agency produce the rationale for their specific decision — not just the general disclosure?"],
+              ["loggedVersioned", "Is every decision logged and timestamped, tied to the version of the logic that produced it?"],
+              ["driftReassess", "If the model or rules change, does that automatically prompt a re-assessment — rather than silently drifting from what was disclosed?"],
+            ].map(([key, q]) => (
+              <div key={key} className="l2-q">
+                <p>{q}</p>
+                <div className="yn">
+                  <button className={"yn-b " + (draft[key] === true ? "yn-on" : "")} onClick={() => setDraft({ ...draft, [key]: true })}>
+                    Yes — today
+                  </button>
+                  <button className={"yn-b " + (draft[key] === false ? "yn-on" : "")} onClick={() => setDraft({ ...draft, [key]: false })}>
+                    No / not yet
+                  </button>
+                </div>
+              </div>
+            ))}
+            <p className="q-help">
+              Honest boundary: this tool can force these questions to be answered; it cannot verify
+              your systems actually do it. Answering "no" is recorded and flagged — it is not a
+              blocker, it is a finding.
+            </p>
+          </fieldset>
+
+          <button className="btn btn-bright btn-big" disabled={!draftComplete || savePhase !== null} onClick={submitAssessment}>
+            {savePhase === "saving" ? "Saving…" : savePhase === "saved" ? "Saved ✓" : "Save as draft and generate the three outputs →"}
+          </button>
+          <button className="link-back" onClick={() => setView("dashboard")}>
+            ← Cancel and return to dashboard
+          </button>
+        </main>
+      )}
+
+      {view === "outputs" && active && active.assessment && (
+        <main>
+          <Eyebrow color="#00E5FF">ONE ASSESSMENT → THREE OUTPUTS</Eyebrow>
+          <div className="out-head">
+            <h2>{active.name}</h2>
+            <LayerLamps uc={active} size="lg" />
+          </div>
+          {active.assessment.reviewStatus === "approved" ? (
+            <div className="banner banner-final" role="status">
+              <strong>{reviewLabel(active.assessment)}.</strong> Editing this assessment will
+              return it to draft for re-review.
+            </div>
+          ) : isLowRiskTier(active.assessment) ? (
+            <div className="banner banner-draft" role="status">
+              <div className="banner-text">
+                <strong>DRAFT — low risk (both ratings Low).</strong> The AI Governance Specialist
+                can self-certify this assessment; no separate approval gate applies at this tier.
+              </div>
+              <label className="selfcert">
+                <input type="checkbox" checked={false} onChange={selfCertify} />
+                I confirm this assessment is accurate — self-certification, AI Governance
+                Specialist
+              </label>
+            </div>
+          ) : (
+            <div className="banner banner-draft" role="status">
+              <div className="banner-text">
+                <strong>
+                  DRAFT — {active.assessment.inherentRisk === "High" || active.assessment.residualRisk === "High" ? "high" : "medium"} risk: two named sign-offs required.
+                </strong>{" "}
+                The citizen notice and register entry stay marked draft until both are recorded.
+                Neither sign-off can be provided by an executive role — executives govern portfolio
+                risk and resourcing; these fields verify technical and legal detail, which needs
+                the person who can actually check it.
+              </div>
+
+              <div className="signoff">
+                <p className="signoff-title">
+                  1 · Technical review — AI Governance Specialist{" "}
+                  <span className="signoff-scope">verifies the technical claims: model behaviour, testing evidence, decision logic</span>
+                </p>
+                {active.assessment.techBy ? (
+                  <p className="signoff-done">✓ Recorded — {active.assessment.techBy}, {active.assessment.techDate}</p>
+                ) : (
+                  <div className="approve-fields">
+                    <div className="approve-field">
+                      <label htmlFor="tech-name">Name and role (not an executive role)</label>
+                      <input id="tech-name" value={techNameIn} onChange={(e) => setTechNameIn(e.target.value)} placeholder="Hypothetical only — e.g. A. Nguyen, AI Governance Specialist" />
+                    </div>
+                    <div className="approve-field">
+                      <label htmlFor="tech-date">Date</label>
+                      <input id="tech-date" type="date" value={techDateIn} onChange={(e) => setTechDateIn(e.target.value)} />
+                    </div>
+                    <button className="btn btn-approve" disabled={!techNameIn.trim() || !techDateIn} onClick={() => recordSignoff("tech")}>
+                      Record technical sign-off ✓
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              <div className="signoff">
+                <p className="signoff-title">
+                  2 · Legal review — legal counsel{" "}
+                  <span className="signoff-scope">verifies legal authority to automate this decision and that citizen recourse is legally adequate</span>
+                </p>
+                {active.assessment.legalBy ? (
+                  <p className="signoff-done">✓ Recorded — {active.assessment.legalBy}, {active.assessment.legalDate}</p>
+                ) : (
+                  <div className="approve-fields">
+                    <div className="approve-field">
+                      <label htmlFor="legal-name">Name and role (not an executive role)</label>
+                      <input id="legal-name" value={legalNameIn} onChange={(e) => setLegalNameIn(e.target.value)} placeholder="Hypothetical only — e.g. S. Patel, Legal Counsel" />
+                    </div>
+                    <div className="approve-field">
+                      <label htmlFor="legal-date">Date</label>
+                      <input id="legal-date" type="date" value={legalDateIn} onChange={(e) => setLegalDateIn(e.target.value)} />
+                    </div>
+                    <button className="btn btn-approve" disabled={!legalNameIn.trim() || !legalDateIn} onClick={() => recordSignoff("legal")}>
+                      Record legal sign-off ✓
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {!isL2Capable(active.assessment) && (
+            <p className="flag-amber big-flag" role="alert">
+              ⚠ Documented only. The paperwork below is complete, but at least one runtime capability
+              is missing — so the promises in the citizen notice are not yet backed by the system.
+              This is the most common failure mode; it is flagged, not hidden.
+            </p>
+          )}
+
+          <div className="outputs">
+            <section className="out-card">
+              <Eyebrow>OUTPUT A — REGISTER-READY ENTRY</Eyebrow>
+              <p className="reg-subhead">DTA Standard for Accountability</p>
+              <dl className="reg">
+                <div><dt>Use case name</dt><dd>{active.name}</dd></div>
+                <div><dt>Reference number</dt><dd>{active.id.toUpperCase()}</dd></div>
+                <div><dt>Description</dt><dd>{active.assessment.description || "Not recorded"}</dd></div>
+                <div><dt>AI technology type</dt><dd>{AI_TECH[active.assessment.systemType] || "Not recorded"}</dd></div>
+                <div><dt>Lifecycle stage</dt><dd>{LIFECYCLE[active.assessment.lifecycle] || "Not recorded"}</dd></div>
+                <div><dt>Domain</dt><dd>{active.assessment.domain || "Not recorded"}</dd></div>
+                <div><dt>Usage pattern</dt><dd>{active.assessment.usagePattern || "Not recorded"}</dd></div>
+                <div><dt>Accountable owner</dt><dd>{active.owner}{active.assessment.ownerEmail ? " · " + active.assessment.ownerEmail : ""}</dd></div>
+                <div><dt>In-scope criteria</dt><dd>{active.assessment.inScopeCriteria || "Not recorded"}</dd></div>
+                <div><dt>Inherent risk</dt><dd>{active.assessment.inherentRisk || "Not recorded"}</dd></div>
+                <div><dt>Residual risk</dt><dd>{active.assessment.residualRisk || "Not recorded"}</dd></div>
+                <div><dt>Impact assessment last updated</dt><dd>{active.assessment.impactAssessmentDate || "Not recorded"}</dd></div>
+                {isHighRisk(active.assessment) && (
+                  <>
+                    <div><dt>Last review date</dt><dd>{active.assessment.lastReviewDate || "Not recorded"}</dd></div>
+                    <div><dt>Next review date</dt><dd>{active.assessment.nextReviewDate || "Not recorded"}</dd></div>
+                  </>
+                )}
+              </dl>
+
+              <p className="reg-subhead">Testing evidence</p>
+              <div className="evidence" aria-label="Test record">
+                <div className="ev-row"><span className="ev-label">What was tested</span><p>{active.assessment.testingSummary || "Not recorded"}</p></div>
+                <div className="ev-row"><span className="ev-label">Test date</span><p>{active.assessment.testDate || "Not recorded"}</p></div>
+                <div className="ev-row"><span className="ev-label">Criteria</span><p>{active.assessment.testCriteria || "Not recorded"}</p></div>
+                <div className="ev-row ev-result"><span className="ev-label">Result</span><p>{active.assessment.testResult || "Not recorded"}</p></div>
+              </div>
+              <div className="trace" aria-label="Worked example decision trace">
+                <p className="trace-title">
+                  Worked example — one hypothetical case, traced
+                  <span className="trace-stamp">{active.assessment.traceTimestamp ? "logged " + active.assessment.traceTimestamp : "timestamp not logged"}</span>
+                </p>
+                <div className="trace-step"><span className="trace-label">Input</span><p>{active.assessment.traceInput || "Not recorded"}</p></div>
+                <div className="trace-arrow" aria-hidden="true">↓</div>
+                <div className="trace-step"><span className="trace-label">What the system checked</span><p>{active.assessment.traceChecked || "Not recorded"}</p></div>
+                <div className="trace-arrow" aria-hidden="true">↓</div>
+                <div className="trace-step"><span className="trace-label">What rule / step produced the outcome</span><p>{active.assessment.traceRule || "Not recorded"}</p></div>
+                <div className="trace-arrow" aria-hidden="true">↓</div>
+                <div className="trace-step trace-result"><span className="trace-label">Result</span><p>{active.assessment.traceResult || "Not recorded"}</p></div>
+              </div>
+
+              <p className="reg-subhead">Beyond the standard — runtime &amp; proof fields</p>
+              <dl className="reg">
+                <div><dt>APP 1.7 trigger</dt><dd>YES — personal information used in automated decision-making</dd></div>
+                <div><dt>Data sources</dt><dd>{active.assessment.dataSources}</dd></div>
+                <div><dt>Decision logic</dt><dd>{active.assessment.decisionLogic}</dd></div>
+                <div><dt>Human oversight</dt><dd>{OVERSIGHT[active.assessment.oversight]}</dd></div>
+                <div><dt>Model / version</dt><dd>{active.assessment.modelVersion || "Not recorded"}</dd></div>
+                <div><dt>Developer / vendor</dt><dd>{active.assessment.vendor || "Not recorded"}</dd></div>
+                <div><dt>Review cadence</dt><dd>{active.assessment.cadence || "Not recorded"}</dd></div>
+                <div><dt>Training data</dt><dd>{active.assessment.systemType === "rules" ? "Not applicable — rules-based, no training data" : active.assessment.trainingProvenance || "Not recorded"}</dd></div>
+                <div><dt>Bias testing</dt><dd>{BIAS_STATUS[active.assessment.biasTesting] || "Not recorded"}</dd></div>
+                <div><dt>Bias notes</dt><dd>{active.assessment.biasNotes || "None recorded"}</dd></div>
+                <div><dt>Data retention</dt><dd>{active.assessment.retention || "Not recorded"}</dd></div>
+                <div><dt>Runtime rationale</dt><dd>{active.assessment.rationaleOnDemand ? "AVAILABLE — case-specific rationale on request" : "NOT AVAILABLE — flagged for remediation"}</dd></div>
+                <div><dt>Decision logging</dt><dd>{active.assessment.loggedVersioned ? "Logged + timestamped, tied to logic version" : "NOT version-tied — flagged"}</dd></div>
+                <div><dt>Change detection</dt><dd>{active.assessment.driftReassess ? "Logic change prompts re-assessment" : "NO drift detection — flagged"}</dd></div>
+                <div><dt>Status</dt><dd>{isL2Capable(active.assessment) ? "PROVEN IN PRACTICE" : "DOCUMENTED ONLY — REMEDIATION REQUIRED"}</dd></div>
+                <div><dt>Review</dt><dd>{reviewLabel(active.assessment)}</dd></div>
+              </dl>
+              <button
+                className="btn btn-dl"
+                onClick={() => downloadFile(active.id + "-register-entry.json", buildRegisterJSON(active), "application/json")}
+              >
+                ↓ Download register entry (.json)
+              </button>
+              <Ghost
+                label="Would connect to: agency AI Use Case Register"
+                detail="Linking, not duplicating — this entry would reference the register record, not create a second source of truth."
+              />
+            </section>
+
+            <section className="out-card citizen">
+              <Eyebrow>OUTPUT B — CITIZEN-FACING NOTICE</Eyebrow>
+              <div className="notice">
+                <h3>How this decision was made</h3>
+                <p>{active.assessment.purpose}</p>
+                <h4>What information we used</h4>
+                <p>{active.assessment.dataSources}</p>
+                <h4>How the automated part works</h4>
+                <p>{active.assessment.decisionLogic}</p>
+                <h4>Was a person involved?</h4>
+                <p>{OVERSIGHT_CITIZEN[active.assessment.oversight]}</p>
+                <h4>How long we keep your information</h4>
+                <p>{active.assessment.retention || "Not recorded."}</p>
+                <h4>A worked example</h4>
+                <p className="notice-example-intro">Here's how the system handled one (invented) case, step by step:</p>
+                <div className="trace trace-citizen" aria-label="Worked example decision trace">
+                  <div className="trace-step"><span className="trace-label">Input</span><p>{active.assessment.traceInput || "Not recorded"}</p></div>
+                  <div className="trace-arrow" aria-hidden="true">↓</div>
+                  <div className="trace-step"><span className="trace-label">What the system checked</span><p>{active.assessment.traceChecked || "Not recorded"}</p></div>
+                  <div className="trace-arrow" aria-hidden="true">↓</div>
+                  <div className="trace-step"><span className="trace-label">What produced the outcome</span><p>{active.assessment.traceRule || "Not recorded"}</p></div>
+                  <div className="trace-arrow" aria-hidden="true">↓</div>
+                  <div className="trace-step trace-result"><span className="trace-label">Result</span><p>{active.assessment.traceResult || "Not recorded"}</p></div>
+                </div>
+                <h4>Your options</h4>
+                <p>
+                  You can ask us to explain the decision in your specific case — like the worked
+                  example above, but for your own circumstances
+                  {active.assessment.rationaleOnDemand
+                    ? " — and we can show you the record of what happened and why."
+                    : "."}{" "}
+                  You can ask for the decision to be reviewed by a person. If you are not satisfied
+                  with the review, you can complain to the agency, and then to the Office of the
+                  Australian Information Commissioner (OAIC).
+                </p>
+              </div>
+              {!active.assessment.rationaleOnDemand && (
+                <p className="flag-amber" role="alert">
+                  ⚠ Hollow-disclosure check: this notice invites people to ask about their specific
+                  case, but the assessment says the system cannot currently produce a case-specific
+                  rationale. Publishing it as-is would promise something the agency can't deliver.
+                </p>
+              )}
+              <div className="out-actions">
+                <button className="btn btn-bright" onClick={() => { setCitizenAction(null); setView("citizen"); }}>
+                  View as the citizen sees it →
+                </button>
+                <button
+                  className="btn btn-dl"
+                  onClick={() => downloadFile(active.id + "-citizen-notice.txt", buildCitizenText(active), "text/plain")}
+                >
+                  ↓ Download citizen notice (.txt)
+                </button>
+              </div>
+            </section>
+
+            <section className="out-card">
+              <Eyebrow>OUTPUT C — EXECUTIVE SUMMARY ROW</Eyebrow>
+              <table className="exec">
+                <thead>
+                  <tr>
+                    <th>Use case</th>
+                    <th>Owner</th>
+                    <th>Oversight</th>
+                    <th>Documented</th>
+                    <th>Proven in Practice</th>
+                    <th>Review</th>
+                    <th>Dec 2026</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>{active.name}</td>
+                    <td>{active.owner}</td>
+                    <td>{active.assessment.oversight === "each" ? "Every decision" : active.assessment.oversight === "sample" ? "Sample" : "None"}</td>
+                    <td className="ok">✓</td>
+                    <td className={isL2Capable(active.assessment) ? "ok" : "warn"}>
+                      {isL2Capable(active.assessment) ? "✓" : "GAP"}
+                    </td>
+                    <td className={active.assessment.reviewStatus === "approved" ? "ok" : "warn"}>
+                      {active.assessment.reviewStatus === "approved" ? "Final" : "Draft"}
+                    </td>
+                    <td className={isL2Capable(active.assessment) ? "ok" : "warn"}>
+                      {isL2Capable(active.assessment) ? "Ready" : "At risk"}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <details className="exec-evidence">
+                <summary>Testing evidence — {active.assessment.testResult || "not recorded"}</summary>
+                <div className="ev-row"><span className="ev-label">What was tested</span><p>{active.assessment.testingSummary || "Not recorded"}</p></div>
+                <div className="ev-row"><span className="ev-label">Date</span><p>{active.assessment.testDate || "Not recorded"}</p></div>
+                <div className="trace trace-compact" aria-label="Worked example decision trace">
+                  <div className="trace-step"><span className="trace-label">Input</span><p>{active.assessment.traceInput || "Not recorded"}</p></div>
+                  <div className="trace-step"><span className="trace-label">Checked</span><p>{active.assessment.traceChecked || "Not recorded"}</p></div>
+                  <div className="trace-step"><span className="trace-label">Produced outcome</span><p>{active.assessment.traceRule || "Not recorded"}</p></div>
+                  <div className="trace-step trace-result"><span className="trace-label">Result</span><p>{active.assessment.traceResult || "Not recorded"}</p></div>
+                </div>
+              </details>
+              <button
+                className="btn btn-dl"
+                onClick={() => downloadFile(active.id + "-exec-summary.csv", buildExecCSV(active), "text/csv")}
+              >
+                ↓ Download summary row (.csv)
+              </button>
+              <Ghost
+                label="Would connect to: DTA 6-monthly reporting"
+                detail="Currently submitted by email to ai@dta.gov.au. An export here would match whatever format DTA accepts — the absence of a shared schema is part of the systemic gap."
+              />
+            </section>
+          </div>
+
+          <div className="out-actions">
+            <button className="btn" onClick={editAssessment}>
+              ✎ Edit this assessment
+            </button>
+            <button className="btn btn-bright" onClick={() => setView("dashboard")}>
+              ← Back to portfolio dashboard
+            </button>
+          </div>
+        </main>
+      )}
+
+      {view === "citizen" && active && active.assessment && (
+        <main className="citizen-wrap">
+          <p className="citizen-frame">
+            PROTOTYPE MOCKUP — what a person would see after receiving a decision. Hypothetical
+            agency, hypothetical case.
+          </p>
+          <div className="citizen-screen">
+            <div className="cz-masthead">
+              <span className="cz-crest" aria-hidden="true">◆</span>
+              <div>
+                <span className="cz-agency">Example Agency</span>
+                <span className="cz-portal">Your services portal — hypothetical</span>
+              </div>
+            </div>
+
+            <div className="cz-body">
+              <p className="cz-ref">
+                Decision reference {active.id.toUpperCase()}-2318
+                {active.assessment.reviewStatus !== "approved" && (
+                  <span className="cz-draft-tag">DRAFT NOTICE — not yet approved for publication</span>
+                )}
+              </p>
+              <h2>How this decision was made</h2>
+              <p>{active.assessment.purpose}</p>
+
+              <h3>What information we used</h3>
+              <p>{active.assessment.dataSources}</p>
+
+              <h3>How the automated part works</h3>
+              <p>{active.assessment.decisionLogic}</p>
+
+              <h3>Was a person involved?</h3>
+              <p>{OVERSIGHT_CITIZEN[active.assessment.oversight]}</p>
+
+              <h3>How long we keep your information</h3>
+              <p>{active.assessment.retention || "Not recorded."}</p>
+
+              <h3>An example of how the system decides</h3>
+              <p className="notice-example-intro">
+                Here's how the system handled one (invented) case, step by step. If you ask about
+                your decision, this is the kind of explanation you'll get — for your own
+                circumstances:
+              </p>
+              <div className="trace trace-citizen" aria-label="Worked example decision trace">
+                <div className="trace-step"><span className="trace-label">Input</span><p>{active.assessment.traceInput || "Not recorded"}</p></div>
+                <div className="trace-arrow" aria-hidden="true">↓</div>
+                <div className="trace-step"><span className="trace-label">What the system checked</span><p>{active.assessment.traceChecked || "Not recorded"}</p></div>
+                <div className="trace-arrow" aria-hidden="true">↓</div>
+                <div className="trace-step"><span className="trace-label">What produced the outcome</span><p>{active.assessment.traceRule || "Not recorded"}</p></div>
+                <div className="trace-arrow" aria-hidden="true">↓</div>
+                <div className="trace-step trace-result"><span className="trace-label">Result</span><p>{active.assessment.traceResult || "Not recorded"}</p></div>
+              </div>
+
+              <div className="cz-actions">
+                <button className="btn btn-bright" onClick={() => setCitizenAction("question")}>
+                  Ask a question about this decision
+                </button>
+                <button className="btn" onClick={() => setCitizenAction("review")}>
+                  Request a review by a person
+                </button>
+              </div>
+              {citizenAction === "question" && (
+                <p className="cz-action-note" role="status">
+                  In a real service, this would open a secure form tied to your decision reference,
+                  and the agency would respond with the record of what happened in your specific
+                  case. (Prototype — no form behind this button.)
+                </p>
+              )}
+              {citizenAction === "review" && (
+                <p className="cz-action-note" role="status">
+                  In a real service, this would lodge a request for a person to review the decision.
+                  If you're not satisfied with the review, you can complain to the agency, and then
+                  to the Office of the Australian Information Commissioner (OAIC). (Prototype — no
+                  form behind this button.)
+                </p>
+              )}
+            </div>
+          </div>
+          <button className="btn btn-bright" onClick={() => setView("outputs")}>
+            ← Back to the three outputs
+          </button>
+        </main>
+      )}
+    </div>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
+</script>
+</body>
+</html>
